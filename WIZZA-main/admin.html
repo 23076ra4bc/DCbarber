@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Visitor Analytics</title>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            background: #0a0a0a; 
+            font-family: 'Myanmar Text', 'Padauk', monospace; 
+            color: white; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+        }
+        
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            padding-bottom: 20px; 
+            border-bottom: 2px solid #ff4081; 
+        }
+        
+        .header h1 { 
+            color: #ff4081; 
+            font-size: 2em; 
+            margin-bottom: 10px; 
+        }
+        
+        .back-btn { 
+            display: inline-block; 
+            background: #ff4081; 
+            color: white; 
+            padding: 8px 16px; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            margin-top: 10px; 
+            font-size: 14px; 
+        }
+        
+        .login-form { 
+            background: rgba(255, 255, 255, 0.1); 
+            padding: 30px; 
+            border-radius: 10px; 
+            max-width: 400px; 
+            margin: 50px auto; 
+            border: 1px solid #ff4081; 
+        }
+        
+        .login-form h2 { 
+            color: #ff4081; 
+            text-align: center; 
+            margin-bottom: 20px; 
+        }
+        
+        .login-input { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 15px; 
+            background: rgba(255, 255, 255, 0.1); 
+            border: 1px solid #333; 
+            border-radius: 5px; 
+            color: white; 
+            font-size: 16px; 
+        }
+        
+        .login-btn { 
+            width: 100%; 
+            padding: 12px; 
+            background: #ff4081; 
+            border: none; 
+            border-radius: 5px; 
+            color: white; 
+            font-size: 16px; 
+            cursor: pointer; 
+        }
+        
+        .admin-panel { 
+            display: none; 
+        }
+        
+        .admin-panel.show { 
+            display: block; 
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff4081;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .controls { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+        }
+        
+        .control-btn { 
+            background: rgba(255, 64, 129, 0.3); 
+            border: 1px solid #ff4081; 
+            color: white; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 14px; 
+        }
+        
+        .test-btn { 
+            background: rgba(76, 175, 80, 0.3); 
+            border: 1px solid #4caf50; 
+            color: white; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 14px; 
+        }
+        
+        .visitors-table-container { 
+            background: rgba(255, 255, 255, 0.05); 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin-top: 20px; 
+            overflow-x: auto; 
+        }
+        
+        .visitors-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 12px; 
+        }
+        
+        .visitors-table th { 
+            background: rgba(255, 64, 129, 0.3); 
+            color: #ff4081; 
+            padding: 12px 8px; 
+            text-align: left; 
+            border-bottom: 2px solid #ff4081; 
+            font-weight: bold; 
+            position: sticky;
+            top: 0;
+        }
+        
+        .visitors-table td { 
+            padding: 10px 8px; 
+            border-bottom: 1px solid #333; 
+        }
+        
+        .visitors-table tr:hover { 
+            background: rgba(255, 64, 129, 0.1); 
+        }
+        
+        .ip-cell { 
+            font-family: 'Courier New', monospace; 
+            color: #ff9800; 
+        }
+        
+        .coord-cell { 
+            font-family: 'Courier New', monospace; 
+            color: #0f0; 
+            font-size: 11px; 
+        }
+        
+        .vpn-yes {
+            color: #ff4081;
+            font-weight: bold;
+        }
+        
+        .vpn-no {
+            color: #4caf50;
+        }
+        
+        .gps-yes {
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .gps-no {
+            color: #ff9800;
+        }
+        
+        .loading { 
+            text-align: center; 
+            padding: 40px; 
+            color: #ff4081; 
+        }
+        
+        .error { 
+            text-align: center; 
+            padding: 40px; 
+            color: #ff3333; 
+        }
+        
+        .empty-state { 
+            text-align: center; 
+            padding: 40px; 
+            color: #888; 
+        }
+        
+        .table-info { 
+            color: #ccc; 
+            font-size: 14px; 
+            margin-bottom: 10px; 
+            text-align: center; 
+        }
+        
+        .test-status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            text-align: center; 
+            font-size: 14px; 
+        }
+        
+        .test-success { 
+            background: rgba(76, 175, 80, 0.2); 
+            border: 1px solid #4caf50; 
+            color: #4caf50; 
+        }
+        
+        .test-error { 
+            background: rgba(244, 67, 54, 0.2); 
+            border: 1px solid #f44336; 
+            color: #f44336; 
+        }
+
+        .debug-info {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .visitors-table {
+                font-size: 10px;
+            }
+            
+            .visitors-table th,
+            .visitors-table td {
+                padding: 6px 4px;
+            }
+            
+            .stat-value {
+                font-size: 24px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .control-btn, .test-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Admin Panel - Visitor Analytics</h1>
+            <a href="index.html" class="back-btn">Back to Matrix</a>
+        </div>
+
+        <div class="login-form" id="loginForm">
+            <h2>Login</h2>
+            <input type="password" class="login-input" id="adminPassword" placeholder="Enter password" />
+            <button class="login-btn" id="loginBtn">Login</button>
+        </div>
+
+        <div class="admin-panel" id="adminPanel">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalVisitors">0</div>
+                    <div class="stat-label">Total Visitors</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="vpnUsers">0</div>
+                    <div class="stat-label">VPN Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="gpsUsers">0</div>
+                    <div class="stat-label">GPS Data Available</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="mobileUsers">0</div>
+                    <div class="stat-label">Mobile Users</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn" onclick="loadVisitorData()">🔄 Refresh Data</button>
+                <button class="test-btn" onclick="testConnection()">🔧 Test Connection</button>
+                <button class="control-btn" onclick="exportToCSV()">📊 Export to CSV</button>
+                <button class="control-btn" onclick="toggleDebug()">🐛 Debug Info</button>
+            </div>
+
+            <div id="testResult" style="display: none;"></div>
+
+            <div class="visitors-table-container">
+                <div class="table-info" id="tableInfo">Enter password: <strong>visitorData7761</strong> and login to load data</div>
+                <div id="loadingMessage" class="loading" style="display: none;">Loading visitor data from Google Sheets...</div>
+                <div id="errorMessage" class="error" style="display: none;"></div>
+                <div id="emptyMessage" class="empty-state" style="display: none;">No visitor data found</div>
+                
+                <table class="visitors-table" id="visitorsTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th width="150">Timestamp</th>
+                            <th width="120">IP Address</th>
+                            <th width="100">Country</th>
+                            <th width="100">City</th>
+                            <th width="80">VPN</th>
+                            <th width="80">GPS</th>
+                            <th width="120">Coordinates</th>
+                            <th width="80">Device</th>
+                            <th width="100">Browser</th>
+                            <th width="120">ISP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="visitorsTableBody"></tbody>
+                </table>
+            </div>
+
+            <div id="debugInfo" class="debug-info" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = "visitorData7761";
+        const GOOGLE_SHEET_ID = '1tUJ_ZXhibJovB431dLfLrIV0wnPviu1VeY6teQW44kU';
+        
+        let visitorData = [];
+        let debugMode = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const adminPanel = document.getElementById('adminPanel');
+            const adminPassword = document.getElementById('adminPassword');
+            const loginBtn = document.getElementById('loginBtn');
+
+            loginBtn.addEventListener('click', function() {
+                if (adminPassword.value === ADMIN_PASSWORD) {
+                    loginForm.style.display = 'none';
+                    adminPanel.classList.add('show');
+                    loadVisitorData();
+                } else {
+                    alert('Incorrect password. Please use: visitorData7761');
+                    adminPassword.value = '';
+                }
+            });
+
+            adminPassword.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') loginBtn.click();
+            });
+        });
+
+        // Test connection
+        async function testConnection() {
+            const testResult = document.getElementById('testResult');
+            testResult.style.display = 'block';
+            testResult.className = 'test-status';
+            testResult.textContent = 'Testing Google Sheets connection...';
+            
+            try {
+                const data = await loadFromGoogleSheets();
+                testResult.className = 'test-status test-success';
+                testResult.innerHTML = `✅ Connection successful! Found ${data.length} visitor records.`;
+            } catch (error) {
+                testResult.className = 'test-status test-error';
+                testResult.innerHTML = `❌ Connection failed: ${error.message}`;
+            }
+        }
+
+        // Load data directly from Google Sheets using CSV export
+        async function loadFromGoogleSheets() {
+            try {
+                // Method 1: Try CSV export
+                const csvUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv`;
+                
+                console.log('Loading CSV from:', csvUrl);
+                const response = await fetch(csvUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const csvText = await response.text();
+                
+                if (debugMode) {
+                    document.getElementById('debugInfo').innerHTML = 
+                        `<strong>Raw CSV Data (first 500 chars):</strong><br>${csvText.substring(0, 500)}...`;
+                }
+                
+                console.log('CSV content received, length:', csvText.length);
+                
+                const lines = csvText.split('\n').filter(line => line.trim() !== '');
+                
+                if (lines.length <= 1) {
+                    console.log('No data rows found');
+                    return [];
+                }
+                
+                // Parse headers
+                const headers = parseCSVLine(lines[0]).map(h => 
+                    h.trim().replace(/"/g, '').toLowerCase().replace(/\s+/g, ' ')
+                );
+                
+                if (debugMode) {
+                    document.getElementById('debugInfo').innerHTML += 
+                        `<br><strong>Headers:</strong><br>${headers.join(', ')}`;
+                }
+                
+                console.log('Headers found:', headers);
+                
+                const visitors = [];
+                
+                // Process data rows
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    
+                    const values = parseCSVLine(line);
+                    const visitor = {};
+                    
+                    // Map values to headers
+                    for (let j = 0; j < headers.length && j < values.length; j++) {
+                        let value = values[j].trim().replace(/^"|"$/g, '');
+                        visitor[headers[j]] = value;
+                    }
+                    
+                    // Only add if we have basic data
+                    if (visitor.timestamp || visitor.ip || visitor.country || visitor['ip address']) {
+                        // Normalize field names
+                        if (visitor['ip address'] && !visitor.ip) {
+                            visitor.ip = visitor['ip address'];
+                        }
+                        visitors.push(visitor);
+                    }
+                }
+                
+                console.log('Parsed visitors:', visitors.length);
+                
+                if (debugMode) {
+                    document.getElementById('debugInfo').innerHTML += 
+                        `<br><strong>Sample Record:</strong><br>${JSON.stringify(visitors[0] || {}, null, 2)}`;
+                }
+                
+                return visitors;
+                
+            } catch (error) {
+                console.error('Error loading CSV:', error);
+                
+                // Fallback: Try HTML table parsing
+                try {
+                    console.log('Trying HTML fallback...');
+                    return await loadFromGoogleSheetsHTML();
+                } catch (htmlError) {
+                    console.error('HTML fallback also failed:', htmlError);
+                    throw new Error(`Failed to load data: ${error.message}`);
+                }
+            }
+        }
+
+        // Fallback method: Parse HTML table from published sheet
+        async function loadFromGoogleSheetsHTML() {
+            try {
+                const htmlUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/edit?usp=sharing`;
+                const response = await fetch(htmlUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const htmlText = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                
+                // Look for table elements
+                const tables = doc.querySelectorAll('table');
+                console.log('Found tables:', tables.length);
+                
+                if (tables.length === 0) {
+                    throw new Error('No tables found in HTML');
+                }
+                
+                // This is a simplified parser - you might need to adjust based on Google Sheets' HTML structure
+                const visitors = [];
+                const table = tables[0];
+                const rows = table.querySelectorAll('tr');
+                
+                if (rows.length <= 1) return [];
+                
+                // Get headers from first row
+                const headerCells = rows[0].querySelectorAll('td, th');
+                const headers = Array.from(headerCells).map(cell => 
+                    cell.textContent.trim().toLowerCase().replace(/\s+/g, ' ')
+                );
+                
+                // Process data rows
+                for (let i = 1; i < rows.length; i++) {
+                    const cells = rows[i].querySelectorAll('td, th');
+                    const visitor = {};
+                    
+                    for (let j = 0; j < headers.length && j < cells.length; j++) {
+                        visitor[headers[j]] = cells[j].textContent.trim();
+                    }
+                    
+                    if (visitor.timestamp || visitor.ip || visitor.country) {
+                        visitors.push(visitor);
+                    }
+                }
+                
+                return visitors;
+                
+            } catch (error) {
+                throw new Error(`HTML fallback failed: ${error.message}`);
+            }
+        }
+
+        // Improved CSV line parser
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    if (inQuotes && line[i + 1] === '"') {
+                        // Escaped quote
+                        current += '"';
+                        i++; // Skip next quote
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current);
+            return result.map(val => val.trim());
+        }
+
+        // Load visitor data
+        async function loadVisitorData() {
+            const loadingMessage = document.getElementById('loadingMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const emptyMessage = document.getElementById('emptyMessage');
+            const visitorsTable = document.getElementById('visitorsTable');
+            const tableInfo = document.getElementById('tableInfo');
+            
+            loadingMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            emptyMessage.style.display = 'none';
+            visitorsTable.style.display = 'none';
+            tableInfo.textContent = 'Loading data...';
+
+            try {
+                const data = await loadFromGoogleSheets();
+                visitorData = data;
+                
+                if (!visitorData || visitorData.length === 0) {
+                    loadingMessage.style.display = 'none';
+                    emptyMessage.style.display = 'block';
+                    tableInfo.textContent = 'No visitor data found in Google Sheets';
+                    return;
+                }
+                
+                updateStats();
+                updateVisitorsTable();
+                
+                loadingMessage.style.display = 'none';
+                visitorsTable.style.display = 'table';
+                tableInfo.textContent = `Showing ${visitorData.length} visitor records (Last updated: ${new Date().toLocaleTimeString()})`;
+                
+            } catch (error) {
+                console.error('Load error:', error);
+                loadingMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = `Failed to load data: ${error.message}`;
+                tableInfo.textContent = 'Error loading data';
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const totalVisitors = visitorData.length;
+            const vpnUsers = visitorData.filter(v => 
+                (v.vpndetected && v.vpndetected.toLowerCase() === 'yes') ||
+                (v['vpn detected'] && v['vpn detected'].toLowerCase() === 'yes')
+            ).length;
+            
+            const gpsUsers = visitorData.filter(v => {
+                const lat = v.gpslatitude || v['gps latitude'];
+                const lng = v.gpslongitude || v['gps longitude'];
+                return lat && lng && lat !== 'N/A' && lng !== 'N/A' && lat !== '' && lng !== '';
+            }).length;
+            
+            const mobileUsers = visitorData.filter(v => 
+                (v.devicetype && v.devicetype.toLowerCase() === 'mobile') ||
+                (v['device type'] && v['device type'].toLowerCase() === 'mobile')
+            ).length;
+
+            document.getElementById('totalVisitors').textContent = totalVisitors;
+            document.getElementById('vpnUsers').textContent = vpnUsers;
+            document.getElementById('gpsUsers').textContent = gpsUsers;
+            document.getElementById('mobileUsers').textContent = mobileUsers;
+        }
+
+        // Update visitors table
+        function updateVisitorsTable() {
+            const tableBody = document.getElementById('visitorsTableBody');
+            const emptyMessage = document.getElementById('emptyMessage');
+            
+            tableBody.innerHTML = '';
+
+            if (visitorData.length === 0) {
+                emptyMessage.style.display = 'block';
+                return;
+            }
+
+            emptyMessage.style.display = 'none';
+
+            // Show latest first
+            const sortedData = [...visitorData].sort((a, b) => {
+                const dateA = a.timestamp ? new Date(a.timestamp) : new Date(0);
+                const dateB = b.timestamp ? new Date(b.timestamp) : new Date(0);
+                return dateB - dateA;
+            });
+
+            sortedData.forEach(visitor => {
+                const row = document.createElement('tr');
+                
+                // Normalize field names
+                const timestamp = visitor.timestamp || '';
+                const ip = visitor.ip || visitor['ip address'] || 'Unknown';
+                const country = visitor.country || 'Unknown';
+                const city = visitor.city || 'Unknown';
+                const vpnDetected = visitor.vpndetected || visitor['vpn detected'] || 'No';
+                const gpsLat = visitor.gpslatitude || visitor['gps latitude'] || '';
+                const gpsLng = visitor.gpslongitude || visitor['gps longitude'] || '';
+                const deviceType = visitor.devicetype || visitor['device type'] || 'Unknown';
+                const browser = visitor.browser || 'Unknown';
+                const isp = visitor.isp || 'Unknown';
+                
+                const formattedTimestamp = formatDate(timestamp);
+                const vpnStatus = vpnDetected === 'Yes' ? 
+                    '<span class="vpn-yes">Yes</span>' : 
+                    '<span class="vpn-no">No</span>';
+                
+                const hasGPS = gpsLat && gpsLng && gpsLat !== 'N/A' && gpsLng !== 'N/A' && gpsLat !== '' && gpsLng !== '';
+                const gpsStatus = hasGPS ? 
+                    '<span class="gps-yes">Yes</span>' : 
+                    '<span class="gps-no">No</span>';
+                
+                const coordinates = hasGPS ? 
+                    `${parseFloat(gpsLat).toFixed(4)}, ${parseFloat(gpsLng).toFixed(4)}` : 
+                    'N/A';
+                
+                row.innerHTML = `
+                    <td>${formattedTimestamp}</td>
+                    <td class="ip-cell">${ip}</td>
+                    <td>${country}</td>
+                    <td>${city}</td>
+                    <td>${vpnStatus}</td>
+                    <td>${gpsStatus}</td>
+                    <td class="coord-cell">${coordinates}</td>
+                    <td>${deviceType}</td>
+                    <td>${browser}</td>
+                    <td title="${isp}">${isp.length > 15 ? isp.substring(0, 15) + '...' : isp}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            if (visitorData.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            try {
+                // Get headers from first object
+                const headers = Object.keys(visitorData[0]);
+                
+                // Create CSV content
+                const csvContent = [
+                    headers.join(','),
+                    ...visitorData.map(row => 
+                        headers.map(header => {
+                            const value = row[header] || '';
+                            // Escape quotes and wrap in quotes if contains comma
+                            return value.includes(',') ? `"${value.replace(/"/g, '""')}"` : value;
+                        }).join(',')
+                    )
+                ].join('\n');
+                
+                // Create download link
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `visitor-data-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+            } catch (error) {
+                console.error('Export error:', error);
+                alert('Error exporting data: ' + error.message);
+            }
+        }
+
+        // Toggle debug info
+        function toggleDebug() {
+            debugMode = !debugMode;
+            const debugInfo = document.getElementById('debugInfo');
+            debugInfo.style.display = debugMode ? 'block' : 'none';
+            
+            if (debugMode) {
+                loadVisitorData(); // Reload with debug info
+            }
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString || dateString === '') {
+                return 'Unknown';
+            }
+            
+            try {
+                const date = new Date(dateString);
+                
+                if (isNaN(date.getTime())) {
+                    return 'Invalid Date';
+                }
+                
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            } catch {
+                return 'Invalid Date';
+            }
+        }
+
+        // Auto-refresh has been removed as requested
+    </script>
+</body>
+</html>
