@@ -253,118 +253,11 @@ function generateStarRating(rating) {
     return stars;
 }
 
-// Server Communication Functions
-async function submitRatingToServer(hairstyleId, ratingValue) {
-    try {
-        console.log('🔄 Submitting rating to server...', { hairstyleId, ratingValue });
-        
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                action: 'submit_rating',
-                hairstyle_id: hairstyleId,
-                rating: ratingValue,
-                timestamp: new Date().toISOString()
-            })
-        });
-        
-        console.log('📨 Response status:', response.status);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const result = await response.json();
-        console.log('✅ Server response:', result);
-        
-        return result.success;
-        
-    } catch (error) {
-        console.error('❌ Rating submit error:', error);
-        // Fallback to local storage
-        storeRatingLocally(hairstyleId, ratingValue);
-        return true; // Return true to continue flow
-    }
-}
-
-async function getRatingsFromServer() {
-    try {
-        console.log('🔄 Fetching ratings from server...');
-        const url = `${GOOGLE_SCRIPT_URL}?action=get_ratings&t=${Date.now()}`;
-        
-        const response = await fetch(url);
-        console.log('📨 Response status:', response.status);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('✅ Server ratings data:', data);
-        
-        if (data.success && data.ratings) {
-            return data.ratings;
-        } else {
-            throw new Error('Invalid response format from server');
-        }
-        
-    } catch (error) {
-        console.error('❌ Ratings fetch error:', error);
-        // Fallback to local storage
-        return getLocalRatings();
-    }
-}
-
-// Local storage fallback functions
-function storeRatingLocally(hairstyleId, ratingValue) {
-    try {
-        const localRatings = JSON.parse(localStorage.getItem('barber_ratings') || '{}');
-        if (!localRatings[hairstyleId]) {
-            localRatings[hairstyleId] = [];
-        }
-        localRatings[hairstyleId].push(ratingValue);
-        localStorage.setItem('barber_ratings', JSON.stringify(localRatings));
-        console.log('💾 Rating stored locally');
-    } catch (error) {
-        console.error('❌ Local storage error:', error);
-    }
-}
-
-function getLocalRatings() {
-    try {
-        const ratings = JSON.parse(localStorage.getItem('barber_ratings') || '{}');
-        console.log('💾 Local ratings loaded:', ratings);
-        return ratings;
-    } catch (error) {
-        console.error('❌ Local storage read error:', error);
-        return {};
-    }
-}
-
-// Update hairstyles data with real ratings from server
-async function loadRealRatings() {
-    try {
-        console.log('🔄 Loading ratings from server...');
-        const serverRatings = await getRatingsFromServer();
-        
-        if (serverRatings && Object.keys(serverRatings).length > 0) {
-            hairstyles.forEach(hairstyle => {
-                if (serverRatings[hairstyle.id] && Array.isArray(serverRatings[hairstyle.id])) {
-                    hairstyle.userRatings = serverRatings[hairstyle.id];
-                } else {
-                    hairstyle.userRatings = [];
-                }
-            });
-            console.log('✅ Real ratings loaded from server');
-        } else {
-            console.log('ℹ️ No ratings found, using empty arrays');
-        }
-    } catch (error) {
-        console.error('❌ Error loading ratings:', error);
-    }
+// Load ratings - empty arrays only (no storage)
+function loadRealRatings() {
+    console.log('🔄 Initializing empty ratings...');
+    // All ratings remain as empty arrays
+    console.log('✅ Ratings initialized as empty arrays');
 }
 
 // DOM Elements
@@ -556,13 +449,13 @@ function closeAllModals() {
 }
 
 // Event Listeners
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 DOM loaded, initializing app...');
     
-    // Load real ratings from server first
-    await loadRealRatings();
+    // Initialize empty ratings
+    loadRealRatings();
     
-    // Generate hairstyle cards with real ratings
+    // Generate hairstyle cards with empty ratings
     generateHairstyleCards();
     
     // Close modal when clicking outside
@@ -603,19 +496,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
     
-    // Submit rating - Real-time with server storage
-    submitRatingBtn.addEventListener('click', async () => {
+    // Submit rating - Temporary session only (no storage)
+    submitRatingBtn.addEventListener('click', () => {
         if (userRating > 0 && currentHairstyle) {
             // Show loading state
             const originalText = submitRatingBtn.textContent;
             submitRatingBtn.textContent = 'သိမ်းဆည်းနေသည်...';
             submitRatingBtn.disabled = true;
             
-            try {
-                const success = await submitRatingToServer(currentHairstyle.id, userRating);
-                
-                if (success) {
-                    // Add rating to current hairstyle locally for immediate update
+            // Simulate saving process
+            setTimeout(() => {
+                try {
+                    // Add rating to current hairstyle for current session only
                     currentHairstyle.userRatings.push(userRating);
                     
                     // Update display
@@ -632,18 +524,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                     // Update grid display
                     generateHairstyleCards();
                     
-                    alert('ကျေးဇူးတင်ပါသည်! သင်၏ အဆင့်သတ်မှတ်ချက်ကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။');
-                } else {
-                    alert('အဆင့်သတ်မှတ်ချက် မှတ်တမ်းတင်ရာတွင် အမှားတစ်ခုဖြစ်နေပါသည်။ ကျေးဇူးပြု၍ နောက်မှ ထပ်ကြိုးစားပါ။');
+                    alert('ကျေးဇူးတင်ပါသည်! သင်၏ အဆင့်သတ်မှတ်ချက်ကို ယာယီသိမ်းဆည်းပြီးပါပြီ။\n(ဤအဆင့်သတ်မှတ်ချက်သည် page ကို refresh လုပ်လျှင် ပျက်သွားမည်)');
+                } catch (error) {
+                    console.error('Error in rating submission:', error);
+                    alert('အဆင့်သတ်မှတ်ချက် မှတ်တမ်းတင်ရာတွင် အမှားတစ်ခုဖြစ်နေပါသည်။');
+                } finally {
+                    // Reset button state
+                    submitRatingBtn.textContent = originalText;
+                    submitRatingBtn.disabled = false;
                 }
-            } catch (error) {
-                console.error('Error in rating submission:', error);
-                alert('အဆင့်သတ်မှတ်ချက် မှတ်တမ်းတင်ရာတွင် အမှားတစ်ခုဖြစ်နေပါသည်။');
-            } finally {
-                // Reset button state
-                submitRatingBtn.textContent = originalText;
-                submitRatingBtn.disabled = false;
-            }
+            }, 500);
         } else {
             alert('ကျေးဇူးပြု၍ အဆင့်သတ်မှတ်ချက်ကို ရွေးချယ်ပါ။');
         }
