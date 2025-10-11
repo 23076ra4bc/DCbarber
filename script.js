@@ -1,232 +1,5 @@
 
-// Hairstyle data - ဆံပင်ပုံစံ ၁၆ မျိုး (No fake ratings)
-const hairstyles = [
-    {
-        id: 1,
-        name: "Classic Fade",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/classic-fade-1.jpg",
-            "images/classic-fade-2.jpg",
-            "images/classic-fade-3.jpg"
-        ],
-        faceType: "ဘဲဥပုံ၊ စတုရန်းပုံ",
-        hairLength: "၁ လက်မမှ ၃ လက်မအထိ",
-        serviceTime: "မိနစ် ၃၀",
-        userRatings: []
-    },
-    {
-        id: 2,
-        name: "Pompadour",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/pompadour-1.jpg",
-            "images/pompadour-2.jpg",
-            "images/pompadour-3.jpg"
-        ],
-        faceType: "ဘဲဥပုံ၊ ရှည်လျားသောပုံ",
-        hairLength: "၄ လက်မမှ ၆ လက်မအထိ",
-        serviceTime: "မိနစ် ၄၅",
-        userRatings: []
-    },
-    {
-        id: 3,
-        name: "Undercut",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/undercut-1.jpg",
-            "images/undercut-2.jpg",
-            "images/undercut-3.jpg"
-        ],
-        faceType: "စတုရန်းပုံ၊ ဝိုင်းဝိုင်းပုံ",
-        hairLength: "၃ လက်မမှ ၅ လက်မအထိ",
-        serviceTime: "မိနစ် ၄၀",
-        userRatings: []
-    },
-    {
-        id: 4,
-        name: "Hight Fade",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/hight-fade-3.jpg",
-            "images/hight-fade-2.jpg",
-            "images/hight-fade-1.jpg"
-        ],
-        faceType: "အားလုံးသော မျက်နှာအမျိုးအစားများ",
-        hairLength: "၀.၅ လက်မမှ 3 လက်မအထိ",
-        serviceTime: "မိနစ် ၃၀",
-        userRatings: []
-    },
-      {
-        id: 5,
-        name: "Textured Crop",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/textured-crop-1.jpg",
-            "images/textured-crop-2.jpg",
-            "images/textured-crop-3.jpg"
-        ],
-        faceType: "ဝိုင်းဝိုင်းပုံ၊ ဘဲဥပုံ",
-        hairLength: "၂ လက်မမှ ၄ လက်မအထိ",
-        serviceTime: "မိနစ် ၃၅",
-        userRatings: []
-    },
-    {
-        id: 6,
-        name: "Buzz Cut",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/buzz-cut-1.jpg",
-            "images/buzz-cut-2.jpg",
-            "images/buzz-cut-3.jpg"
-        ],
-        faceType: "အားလုံးသော မျက်နှာအမျိုးအစားများ",
-        hairLength: "၀.၅ လက်မမှ ၁ လက်မအထိ",
-        serviceTime: "မိနစ် ၂၀",
-        userRatings: []
-    },
-    {
-        id: 7,
-        name: "Slick Back",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/slick-back-1.jpg",
-            "images/slick-back-2.jpg",
-            "images/slick-back-3.jpg"
-        ],
-        faceType: "ဘဲဥပုံ၊ စတုရန်းပုံ",
-        hairLength: "၄ လက်မမှ ၇ လက်မအထိ",
-        serviceTime: "မိနစ် ၅၀",
-        userRatings: []
-    },
-    
-    {
-        id: 8,
-        name: "Side Part",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/side-part-1.jpg",
-            "images/side-part-2.jpg",
-            "images/side-part-3.jpg"
-        ],
-        faceType: "ဘဲဥပုံ၊ စတုရန်းပုံ",
-        hairLength: "၃ လက်မမှ ၅ လက်မအထိ",
-        serviceTime: "မိနစ် ၃၀",
-        userRatings: []
-    },
-    {
-        id: 9,
-        name: "Quiff",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/quiff-1.jpg",
-            "images/quiff-2.jpg",
-            "images/quiff-3.jpg"
-        ],
-        faceType: "ဘဲဥပုံ၊ နှလုံးပုံ",
-        hairLength: "၄ လက်မမှ ၆ လက်မအထိ",
-        serviceTime: "မိနစ် ၄၅",
-        userRatings: []
-    },
-    {
-        id: 10,
-        name: "Man Bun",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/man-bun-1.jpg",
-            "images/man-bun-2.jpg",
-            "images/man-bun-3.jpg"
-        ],
-        faceType: "ဘဲဥပုံ၊ စတုရန်းပုံ",
-        hairLength: "၆ လက်မအထက်",
-        serviceTime: "မိနစ် ၂၅",
-        userRatings: []
-    },
-    {
-        id: 11,
-        name: "Taper Fade",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/taper-fade-1.jpg",
-            "images/taper-fade-2.jpg",
-            "images/taper-fade-3.jpg"
-        ],
-        faceType: "အားလုံးသော မျက်နှာအမျိုးအစားများ",
-        hairLength: "၂ လက်မမှ ၄ လက်မအထိ",
-        serviceTime: "မိနစ် ၃၅",
-        userRatings: []
-    },
-    {
-        id: 12,
-        name: "Modern Fade",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/modern-fade-1.jpg",
-            "images/modern-fade-2.jpg",
-            "images/modern-fade-3.jpg"
-        ],
-        faceType: "အားလုံးသော မျက်နှာအမျိုးအစားများ",
-        hairLength: "၂ လက်မမှ ၅ လက်မအထိ",
-        serviceTime: "မိနစ် ၄၀",
-        userRatings: []
-    },
-    {
-        id: 13,
-        name: "Curly Fade",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/curly-fade-1.jpg",
-            "images/curly-fade-2.jpg",
-            "images/curly-fade-3.jpg"
-        ],
-        faceType: "ဘဲဥပုံ၊ စတုရန်းပုံ",
-        hairLength: "၃ လက်မမှ ၆ လက်မအထိ",
-        serviceTime: "မိနစ် ၅၀",
-        userRatings: []
-    },
-    {
-        id: 14,
-        name: "Classic Cut",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/classic-cut-1.jpg",
-            "images/classic-cut-2.jpg",
-            "images/classic-cut-3.jpg"
-        ],
-        faceType: "အားလုံးသော မျက်နှာအမျိုးအစားများ",
-        hairLength: "၂ လက်မမှ ၄ လက်မအထိ",
-        serviceTime: "မိနစ် ၂၅",
-        userRatings: []
-    },
-    {
-        id: 15,
-        name: "Modern Cut",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/modern-cut-1.jpg",
-            "images/modern-cut-2.jpg",
-            "images/modern-cut-3.jpg"
-        ],
-        faceType: "ဘဲဥပုံ၊ စတုရန်းပုံ",
-        hairLength: "၃ လက်မမှ ၇ လက်မအထိ",
-        serviceTime: "မိနစ် ၆၀",
-        userRatings: []
-    },
-    {
-        id: 16,
-        name: "Kids Cut",
-        price: "၃၀၀၀ ကျပ်",
-        images: [
-            "images/kids-cut-1.jpg",
-            "images/kids-cut-2.jpg",
-            "images/kids-cut-3.jpg"
-        ],
-        faceType: "အားလုံးသော မျက်နှာအမျိုးအစားများ",
-        hairLength: "၁ လက်မမှ ၄ လက်မအထိ",
-        serviceTime: "မိနစ် ၂၀",
-        userRatings: []
-    }
-];
+// Hairstyle data ကို hairstyle.js ကနေ import လုပ်မယ်
 
 // Real-time Rating Functions
 function calculateAverageRating(ratings) {
@@ -260,53 +33,109 @@ function loadRealRatings() {
     console.log('✅ Ratings initialized as empty arrays');
 }
 
+// Filter System
+let currentFilter = 'all';
+const categories = [
+    { id: 'all', name: 'အားလုံး', count: 63 },
+    { id: 'fade', name: 'Fade Styles', count: 7 },
+    { id: 'buzz', name: 'Buzz Cut', count: 6 },
+    { id: 'undercut', name: 'Undercut', count: 5 },
+    { id: 'pompadour', name: 'Pompadour', count: 5 },
+    { id: 'quiff', name: 'Quiff', count: 5 },
+    { id: 'side-part', name: 'Side Part', count: 5 },
+    { id: 'slick-back', name: 'Slick Back', count: 5 },
+    { id: 'curly', name: 'Curly Hair', count: 5 },
+    { id: 'long', name: 'Long Hair', count: 5 },
+    { id: 'french-crop', name: 'French Crop', count: 5 },
+    { id: 'comb-over', name: 'Comb Over', count: 5 },
+    { id: 'spiky', name: 'Spiky', count: 5 }
+];
+
 // DOM Elements
-const hairstyleGrid = document.getElementById('hairstyleGrid');
-const hairstyleModal = document.getElementById('hairstyleModal');
-const closeModal = document.getElementById('closeModal');
-const modalTitle = document.getElementById('modalTitle');
-const imageSlider = document.getElementById('imageSlider');
-const sliderNav = document.getElementById('sliderNav');
-const prevSlide = document.getElementById('prevSlide');
-const nextSlide = document.getElementById('nextSlide');
-const faceType = document.getElementById('faceType');
-const hairLength = document.getElementById('hairLength');
-const serviceTime = document.getElementById('serviceTime');
-const price = document.getElementById('price');
-const rating = document.getElementById('rating');
-const starsContainer = rating.querySelector('.stars');
-const ratingText = rating.querySelector('.rating-text');
-const userRatingStars = document.querySelectorAll('.user-rating .star');
-const submitRatingBtn = document.getElementById('submitRating');
-
-// FAB Menu Elements
-const fabButton = document.getElementById('fabButton');
-const fabMenu = document.getElementById('fabMenu');
-const infoBtn = document.getElementById('infoBtn');
-const mapBtn = document.getElementById('mapBtn');
-const contactBtn = document.getElementById('contactBtn');
-const servicesBtn = document.getElementById('servicesBtn');
-const nativeShareBtn = document.getElementById('nativeShareBtn');
-
-// Modal Elements
-const infoModal = document.getElementById('infoModal');
-const closeInfoModal = document.getElementById('closeInfoModal');
-const mapModal = document.getElementById('mapModal');
-const closeMapModal = document.getElementById('closeMapModal');
-const contactModal = document.getElementById('contactModal');
-const closeContactModal = document.getElementById('closeContactModal');
-const servicesModal = document.getElementById('servicesModal');
-const closeServicesModal = document.getElementById('closeServicesModal');
+let hairstyleGrid, hairstyleModal, closeModal, modalTitle, imageSlider, sliderNav;
+let prevSlide, nextSlide, faceType, hairLength, serviceTime, price, rating;
+let starsContainer, ratingText, userRatingStars, submitRatingBtn;
+let fabButton, fabMenu, infoBtn, mapBtn, contactBtn, servicesBtn, nativeShareBtn, filterBtn;
+let infoModal, closeInfoModal, mapModal, closeMapModal, contactModal, closeContactModal;
+let servicesModal, closeServicesModal, filterModal, closeFilterModal;
 
 // Current slide index for the modal
 let currentSlide = 0;
 let currentHairstyle = null;
 let userRating = 0;
 
-// Generate hairstyle cards
-function generateHairstyleCards() {
+// Initialize DOM Elements
+function initializeDOMElements() {
+    hairstyleGrid = document.getElementById('hairstyleGrid');
+    hairstyleModal = document.getElementById('hairstyleModal');
+    closeModal = document.getElementById('closeModal');
+    modalTitle = document.getElementById('modalTitle');
+    imageSlider = document.getElementById('imageSlider');
+    sliderNav = document.getElementById('sliderNav');
+    prevSlide = document.getElementById('prevSlide');
+    nextSlide = document.getElementById('nextSlide');
+    faceType = document.getElementById('faceType');
+    hairLength = document.getElementById('hairLength');
+    serviceTime = document.getElementById('serviceTime');
+    price = document.getElementById('price');
+    rating = document.getElementById('rating');
+    
+    if (rating) {
+        starsContainer = rating.querySelector('.stars');
+        ratingText = rating.querySelector('.rating-text');
+    }
+    
+    userRatingStars = document.querySelectorAll('.user-rating .star');
+    submitRatingBtn = document.getElementById('submitRating');
+
+    // FAB Menu Elements
+    fabButton = document.getElementById('fabButton');
+    fabMenu = document.getElementById('fabMenu');
+    infoBtn = document.getElementById('infoBtn');
+    mapBtn = document.getElementById('mapBtn');
+    contactBtn = document.getElementById('contactBtn');
+    servicesBtn = document.getElementById('servicesBtn');
+    nativeShareBtn = document.getElementById('nativeShareBtn');
+    filterBtn = document.getElementById('filterBtn');
+
+    // Modal Elements
+    infoModal = document.getElementById('infoModal');
+    closeInfoModal = document.getElementById('closeInfoModal');
+    mapModal = document.getElementById('mapModal');
+    closeMapModal = document.getElementById('closeMapModal');
+    contactModal = document.getElementById('contactModal');
+    closeContactModal = document.getElementById('closeContactModal');
+    servicesModal = document.getElementById('servicesModal');
+    closeServicesModal = document.getElementById('closeServicesModal');
+    filterModal = document.getElementById('filterModal');
+    closeFilterModal = document.getElementById('closeFilterModal');
+}
+
+// Generate hairstyle cards with filter
+function generateHairstyleCards(filter = 'all') {
+    if (!hairstyleGrid) {
+        console.error('hairstyleGrid not found');
+        return;
+    }
+    
     hairstyleGrid.innerHTML = '';
-    hairstyles.forEach(hairstyle => {
+    
+    const filteredHairstyles = filter === 'all' 
+        ? hairstyles 
+        : hairstyles.filter(style => style.category === filter);
+    
+    if (filteredHairstyles.length === 0) {
+        hairstyleGrid.innerHTML = `
+            <div class="no-results" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                <h3>မတွေ့ပါ</h3>
+                <p>ဤအမျိုးအစားအတွက် ဆံပင်ပုံစံများ မရှိပါ</p>
+            </div>
+        `;
+        return;
+    }
+    
+    filteredHairstyles.forEach(hairstyle => {
         const avgRating = calculateAverageRating(hairstyle.userRatings);
         const card = document.createElement('div');
         card.className = 'hairstyle-card';
@@ -325,8 +154,52 @@ function generateHairstyleCards() {
     });
 }
 
+// Generate filter options
+function generateFilterOptions() {
+    const filterContainer = document.getElementById('filterOptions');
+    if (!filterContainer) {
+        console.error('filterOptions not found');
+        return;
+    }
+    
+    filterContainer.innerHTML = '';
+    
+    categories.forEach(category => {
+        const filterItem = document.createElement('div');
+        filterItem.className = `filter-item ${currentFilter === category.id ? 'active' : ''}`;
+        filterItem.innerHTML = `
+            <span class="filter-name">${category.name}</span>
+            <span class="filter-count">${category.count}</span>
+        `;
+        filterItem.addEventListener('click', () => {
+            currentFilter = category.id;
+            generateHairstyleCards(category.id);
+            updateActiveFilter();
+            closeAllModals();
+        });
+        filterContainer.appendChild(filterItem);
+    });
+}
+
+// Update active filter style
+function updateActiveFilter() {
+    document.querySelectorAll('.filter-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    document.querySelectorAll('.filter-item').forEach(item => {
+        if (item.querySelector('.filter-name').textContent === categories.find(cat => cat.id === currentFilter)?.name) {
+            item.classList.add('active');
+        }
+    });
+}
+
 // Open hairstyle modal
 function openHairstyleModal(hairstyle) {
+    if (!hairstyleModal || !modalTitle || !faceType || !hairLength || !serviceTime || !price || !rating) {
+        console.error('Required modal elements not found');
+        return;
+    }
+
     currentHairstyle = hairstyle;
     currentSlide = 0;
     userRating = 0;
@@ -340,8 +213,10 @@ function openHairstyleModal(hairstyle) {
     
     // Calculate and display average rating
     const avgRating = calculateAverageRating(hairstyle.userRatings);
-    starsContainer.textContent = generateStarRating(avgRating);
-    ratingText.textContent = ` (${hairstyle.userRatings.length} ယောက်သတ်မှတ်ထားသည်)`;
+    if (starsContainer && ratingText) {
+        starsContainer.textContent = generateStarRating(avgRating);
+        ratingText.textContent = ` (${hairstyle.userRatings.length} ယောက်သတ်မှတ်ထားသည်)`;
+    }
     
     // Reset user rating stars
     userRatingStars.forEach(star => {
@@ -349,22 +224,24 @@ function openHairstyleModal(hairstyle) {
     });
     
     // Clear previous slides and dots
-    imageSlider.innerHTML = '';
-    sliderNav.innerHTML = '';
-    
-    // Add slides
-    hairstyle.images.forEach((image, index) => {
-        const slide = document.createElement('div');
-        slide.className = 'slide';
-        slide.innerHTML = `<img src="${image}" alt="${hairstyle.name} ${index + 1}" onerror="this.src='https://via.placeholder.com/500x250?text=No+Image'">`;
-        imageSlider.appendChild(slide);
+    if (imageSlider && sliderNav) {
+        imageSlider.innerHTML = '';
+        sliderNav.innerHTML = '';
         
-        // Add dots
-        const dot = document.createElement('div');
-        dot.className = `slider-dot ${index === 0 ? 'active' : ''}`;
-        dot.addEventListener('click', () => goToSlide(index));
-        sliderNav.appendChild(dot);
-    });
+        // Add slides
+        hairstyle.images.forEach((image, index) => {
+            const slide = document.createElement('div');
+            slide.className = 'slide';
+            slide.innerHTML = `<img src="${image}" alt="${hairstyle.name} ${index + 1}" onerror="this.src='https://via.placeholder.com/500x250?text=No+Image'">`;
+            imageSlider.appendChild(slide);
+            
+            // Add dots
+            const dot = document.createElement('div');
+            dot.className = `slider-dot ${index === 0 ? 'active' : ''}`;
+            dot.addEventListener('click', () => goToSlide(index));
+            sliderNav.appendChild(dot);
+        });
+    }
     
     // Show modal
     hairstyleModal.style.display = 'block';
@@ -374,7 +251,9 @@ function openHairstyleModal(hairstyle) {
 
 // Update slider position
 function updateSlider() {
-    imageSlider.style.transform = `translateX(-${currentSlide * 100}%)`;
+    if (imageSlider) {
+        imageSlider.style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
     
     // Update active dot
     const dots = document.querySelectorAll('.slider-dot');
@@ -391,7 +270,7 @@ function goToSlide(index) {
 
 // Next slide
 function nextSlideFunc() {
-    if (currentSlide < currentHairstyle.images.length - 1) {
+    if (currentHairstyle && currentSlide < currentHairstyle.images.length - 1) {
         currentSlide++;
     } else {
         currentSlide = 0;
@@ -403,7 +282,7 @@ function nextSlideFunc() {
 function prevSlideFunc() {
     if (currentSlide > 0) {
         currentSlide--;
-    } else {
+    } else if (currentHairstyle) {
         currentSlide = currentHairstyle.images.length - 1;
     }
     updateSlider();
@@ -435,48 +314,41 @@ async function nativeShare() {
 
 // Toggle FAB menu
 function toggleFabMenu() {
-    fabMenu.classList.toggle('active');
+    if (fabMenu) {
+        fabMenu.classList.toggle('active');
+    }
 }
 
 // Close all modals
 function closeAllModals() {
-    hairstyleModal.style.display = 'none';
-    infoModal.style.display = 'none';
-    mapModal.style.display = 'none';
-    contactModal.style.display = 'none';
-    servicesModal.style.display = 'none';
+    const modals = [hairstyleModal, infoModal, mapModal, contactModal, servicesModal, filterModal];
+    modals.forEach(modal => {
+        if (modal) modal.style.display = 'none';
+    });
     document.body.style.overflow = 'auto';
 }
 
 // Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 DOM loaded, initializing app...');
-    
-    // Initialize empty ratings
-    loadRealRatings();
-    
-    // Generate hairstyle cards with empty ratings
-    generateHairstyleCards();
-    
+function initializeEventListeners() {
     // Close modal when clicking outside
     window.addEventListener('click', (e) => {
-        if (e.target === hairstyleModal) closeAllModals();
-        if (e.target === infoModal) closeAllModals();
-        if (e.target === mapModal) closeAllModals();
-        if (e.target === contactModal) closeAllModals();
-        if (e.target === servicesModal) closeAllModals();
+        const modals = [hairstyleModal, infoModal, mapModal, contactModal, servicesModal, filterModal];
+        modals.forEach(modal => {
+            if (modal && e.target === modal) closeAllModals();
+        });
     });
     
     // Close modal with close button
-    closeModal.addEventListener('click', closeAllModals);
-    closeInfoModal.addEventListener('click', closeAllModals);
-    closeMapModal.addEventListener('click', closeAllModals);
-    closeContactModal.addEventListener('click', closeAllModals);
-    closeServicesModal.addEventListener('click', closeAllModals);
+    if (closeModal) closeModal.addEventListener('click', closeAllModals);
+    if (closeInfoModal) closeInfoModal.addEventListener('click', closeAllModals);
+    if (closeMapModal) closeMapModal.addEventListener('click', closeAllModals);
+    if (closeContactModal) closeContactModal.addEventListener('click', closeAllModals);
+    if (closeServicesModal) closeServicesModal.addEventListener('click', closeAllModals);
+    if (closeFilterModal) closeFilterModal.addEventListener('click', closeAllModals);
     
     // Slider navigation
-    prevSlide.addEventListener('click', prevSlideFunc);
-    nextSlide.addEventListener('click', nextSlideFunc);
+    if (prevSlide) prevSlide.addEventListener('click', prevSlideFunc);
+    if (nextSlide) nextSlide.addEventListener('click', nextSlideFunc);
     
     // User rating stars
     userRatingStars.forEach(star => {
@@ -497,88 +369,129 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Submit rating - Temporary session only (no storage)
-    submitRatingBtn.addEventListener('click', () => {
-        if (userRating > 0 && currentHairstyle) {
-            // Show loading state
-            const originalText = submitRatingBtn.textContent;
-            submitRatingBtn.textContent = 'သိမ်းဆည်းနေသည်...';
-            submitRatingBtn.disabled = true;
-            
-            // Simulate saving process
-            setTimeout(() => {
-                try {
-                    // Add rating to current hairstyle for current session only
-                    currentHairstyle.userRatings.push(userRating);
-                    
-                    // Update display
-                    const avgRating = calculateAverageRating(currentHairstyle.userRatings);
-                    starsContainer.textContent = generateStarRating(avgRating);
-                    ratingText.textContent = ` (${currentHairstyle.userRatings.length} ယောက်သတ်မှတ်ထားသည်)`;
-                    
-                    // Reset user rating
-                    userRating = 0;
-                    userRatingStars.forEach(star => {
-                        star.classList.remove('active');
-                    });
-                    
-                    // Update grid display
-                    generateHairstyleCards();
-                    
-                    alert('ကျေးဇူးတင်ပါသည်! သင်၏ အဆင့်သတ်မှတ်ချက်ကို ယာယီသိမ်းဆည်းပြီးပါပြီ။\n(ဤအဆင့်သတ်မှတ်ချက်သည် page ကို refresh လုပ်လျှင် ပျက်သွားမည်)');
-                } catch (error) {
-                    console.error('Error in rating submission:', error);
-                    alert('အဆင့်သတ်မှတ်ချက် မှတ်တမ်းတင်ရာတွင် အမှားတစ်ခုဖြစ်နေပါသည်။');
-                } finally {
-                    // Reset button state
-                    submitRatingBtn.textContent = originalText;
-                    submitRatingBtn.disabled = false;
-                }
-            }, 500);
-        } else {
-            alert('ကျေးဇူးပြု၍ အဆင့်သတ်မှတ်ချက်ကို ရွေးချယ်ပါ။');
-        }
-    });
+    if (submitRatingBtn) {
+        submitRatingBtn.addEventListener('click', () => {
+            if (userRating > 0 && currentHairstyle) {
+                // Show loading state
+                const originalText = submitRatingBtn.textContent;
+                submitRatingBtn.textContent = 'သိမ်းဆည်းနေသည်...';
+                submitRatingBtn.disabled = true;
+                
+                // Simulate saving process
+                setTimeout(() => {
+                    try {
+                        // Add rating to current hairstyle for current session only
+                        currentHairstyle.userRatings.push(userRating);
+                        
+                        // Update display
+                        const avgRating = calculateAverageRating(currentHairstyle.userRatings);
+                        if (starsContainer && ratingText) {
+                            starsContainer.textContent = generateStarRating(avgRating);
+                            ratingText.textContent = ` (${currentHairstyle.userRatings.length} ယောက်သတ်မှတ်ထားသည်)`;
+                        }
+                        
+                        // Reset user rating
+                        userRating = 0;
+                        userRatingStars.forEach(star => {
+                            star.classList.remove('active');
+                        });
+                        
+                        // Update grid display
+                        generateHairstyleCards(currentFilter);
+                        
+                        alert('ကျေးဇူးတင်ပါသည်! သင်၏ အဆင့်သတ်မှတ်ချက်ကို ယာယီသိမ်းဆည်းပြီးပါပြီ။\n(ဤအဆင့်သတ်မှတ်ချက်သည် page ကို refresh လုပ်လျှင် ပျက်သွားမည်)');
+                    } catch (error) {
+                        console.error('Error in rating submission:', error);
+                        alert('အဆင့်သတ်မှတ်ချက် မှတ်တမ်းတင်ရာတွင် အမှားတစ်ခုဖြစ်နေပါသည်။');
+                    } finally {
+                        // Reset button state
+                        submitRatingBtn.textContent = originalText;
+                        submitRatingBtn.disabled = false;
+                    }
+                }, 500);
+            } else {
+                alert('ကျေးဇူးပြု၍ အဆင့်သတ်မှတ်ချက်ကို ရွေးချယ်ပါ။');
+            }
+        });
+    }
     
     // FAB menu
-    fabButton.addEventListener('click', toggleFabMenu);
+    if (fabButton) {
+        fabButton.addEventListener('click', toggleFabMenu);
+    }
     
     // FAB menu items
-    infoBtn.addEventListener('click', () => {
-        infoModal.style.display = 'block';
-        fabMenu.classList.remove('active');
+    if (infoBtn) infoBtn.addEventListener('click', () => {
+        if (infoModal) infoModal.style.display = 'block';
+        if (fabMenu) fabMenu.classList.remove('active');
         document.body.style.overflow = 'hidden';
     });
     
-    mapBtn.addEventListener('click', () => {
-        mapModal.style.display = 'block';
-        fabMenu.classList.remove('active');
+    if (mapBtn) mapBtn.addEventListener('click', () => {
+        if (mapModal) mapModal.style.display = 'block';
+        if (fabMenu) fabMenu.classList.remove('active');
         document.body.style.overflow = 'hidden';
     });
     
-    contactBtn.addEventListener('click', () => {
-        contactModal.style.display = 'block';
-        fabMenu.classList.remove('active');
+    if (contactBtn) contactBtn.addEventListener('click', () => {
+        if (contactModal) contactModal.style.display = 'block';
+        if (fabMenu) fabMenu.classList.remove('active');
         document.body.style.overflow = 'hidden';
     });
     
-    servicesBtn.addEventListener('click', () => {
-        servicesModal.style.display = 'block';
-        fabMenu.classList.remove('active');
+    if (servicesBtn) servicesBtn.addEventListener('click', () => {
+        if (servicesModal) servicesModal.style.display = 'block';
+        if (fabMenu) fabMenu.classList.remove('active');
+        document.body.style.overflow = 'hidden';
+    });
+    
+    // Filter Button
+    if (filterBtn) filterBtn.addEventListener('click', () => {
+        if (filterModal) filterModal.style.display = 'block';
+        if (fabMenu) fabMenu.classList.remove('active');
         document.body.style.overflow = 'hidden';
     });
     
     // Native Share Button
-    nativeShareBtn.addEventListener('click', () => {
-        nativeShare();
-        fabMenu.classList.remove('active');
-    });
+    if (nativeShareBtn) {
+        nativeShareBtn.addEventListener('click', () => {
+            nativeShare();
+            if (fabMenu) fabMenu.classList.remove('active');
+        });
+    }
     
     // Close FAB menu when clicking outside
     document.addEventListener('click', (e) => {
-        if (!fabButton.contains(e.target) && !fabMenu.contains(e.target)) {
+        if (fabButton && fabMenu && !fabButton.contains(e.target) && !fabMenu.contains(e.target)) {
             fabMenu.classList.remove('active');
         }
     });
+}
+
+// Main initialization
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🚀 DOM loaded, initializing app...');
+    
+    // Initialize DOM elements
+    initializeDOMElements();
+    
+    // Check if hairstyles data is available
+    if (typeof hairstyles === 'undefined') {
+        console.error('❌ hairstyles data not found. Make sure hairstyle.js is loaded.');
+        return;
+    }
+    
+    // Initialize empty ratings
+    loadRealRatings();
+    
+    // Generate filter options
+    generateFilterOptions();
+    
+    // Generate hairstyle cards with empty ratings
+    generateHairstyleCards();
+    
+    // Initialize event listeners
+    initializeEventListeners();
     
     console.log('✅ App initialization complete');
 });
