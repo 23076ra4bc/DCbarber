@@ -68,7 +68,7 @@ const hairstyleDetails = {
     },
     16: {
         name: "Textured Undercut",
-        details: `Sides are a #1 guard. The 3-inch top hair is heavily layered and styled with a matte, messy, piecey texture for volume and a dry finish.`
+        details: `Sides are a #1> #0.5 guard. The 3-inch top hair is hight volume spike hair, messy, piecey texture for volume and a dry finish.`
     },
     17: {
         name: "Slick Back Undercut",
