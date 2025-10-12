@@ -98,7 +98,7 @@ const hairstyles = [
         name: "Buzz Cut",
         category: "buzz",
         price: "၂၀၀၀ ကျပ်",
-        images: ["images/burr-cut-1.jpg", "images/burr-cut-2.jpg", "images/burr-cut-3.jpg"],
+        images: ["images/buzz-cut-1.jpg", "images/buzz-cut-2.jpg", "images/buzz-cut-3.jpg"],
         faceType: "အားလုံးသော မျက်နှာအမျိုးအစားများ",
         hairLength: "၀.၂ လက်မမှ ၀.၈ လက်မအထိ",
         serviceTime: "မိနစ် ၁၈",
