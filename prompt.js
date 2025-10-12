@@ -72,7 +72,7 @@ const hairstyleDetails = {
     },
     17: {
         name: "Slick Back Undercut",
-        details: `Sides are a tight #1 guard. The long top hair (6 inches) is aggressively combed straight back using a high-shine pomade for a glossy, wet-look finish.`
+        details: `Sides are a tight #1>#0.5>#0.2>#0 guard. The long top hair (6 inches) is aggressively combed straight back using a high-shine pomade for a glossy, wet-look finish.`
     },
     18: {
         name: "Side Part Undercut",
