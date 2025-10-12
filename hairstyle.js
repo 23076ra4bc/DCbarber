@@ -60,7 +60,7 @@ const hairstyles = [
 {
         id: 6,
         name: "Curly Fade",
-        category: "curly",
+        category: "curly","fade"
         price: "၄၀၀၀ ကျပ်",
         images: ["images/curly-fade-1.jpg", "images/curly-fade-2.jpg", "images/curly-fade-3.jpg"],
         faceType: "ဘဲဥပုံ၊ စတုရန်းပုံ",
@@ -95,7 +95,7 @@ const hairstyles = [
     },
     {
         id: 9,
-        name: "Burr Cut",
+        name: "Buzz Cut",
         category: "buzz",
         price: "၂၀၀၀ ကျပ်",
         images: ["images/burr-cut-1.jpg", "images/burr-cut-2.jpg", "images/burr-cut-3.jpg"],
@@ -140,7 +140,7 @@ const hairstyles = [
     {
         id: 13,
         name: "Fade Buzz Cut",
-        category: "buzz",
+        category: "buzz","fade"
         price: "၃၀၀၀ ကျပ်",
         images: ["images/fade-buzz-1.jpg", "images/fade-buzz-2.jpg", "images/fade-buzz-3.jpg"],
         faceType: "အားလုံးသော မျက်နှာအမျိုးအစားများ",
