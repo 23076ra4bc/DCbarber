@@ -155,7 +155,7 @@ const hairstyles = [
         name: "Classic Undercut",
         category: "undercut",
         price: "၃၅၀၀ ကျပ်",
-        images: ["images/classic-undercut-1.jpg", "images/classic-undercut-2.jpg", "images/classic-undercut-3.jpg"],
+        images: ["images/classic-undercut-1.jpg", "images/classic-undercut-2.jpg", "images/classic-undercut-3.jpg","images/slick-back-undercut-4.jpg"],
         faceType: "စတုရန်းပုံ၊ ဝိုင်းဝိုင်းပုံ",
         hairLength: "၃ လက်မမှ ၅ လက်မအထိ",
         serviceTime: "မိနစ် ၄၀",
