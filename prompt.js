@@ -76,8 +76,9 @@ const hairstyleDetails = {
     },
     18: {
         name: "Side Part Undercut",
-        details: `Sides are a #2 guard. The 4-inch top hair is neatly parted and swept to the side. A subtle Hard Part (shaved line) emphasizes the part.`
+        details: `**Sides:** The sides are cut to a uniform #1 guard, completely disconnected from the top. **Top Hair:** 4 inches long, parted cleanly to one side with a medium-shine pomade for a sleek, classic look. **Part:** The parting line is precisely defined (can be a Hard Part - razor line). **Volume:** The hair is combed flat to the head with minimal lift, emphasizing the sharp disconnection.`
     },
+
 
     // Pompadour Styles (5)
     19: {
