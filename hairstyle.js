@@ -60,7 +60,7 @@ const hairstyles = [
 {
         id: 6,
         name: "Curly Fade",
-        category: "curly",
+        category: "fade",
         price: "၄၀၀၀ ကျပ်",
         images: ["images/curly-fade-1.jpg", "images/curly-fade-2.jpg", "images/curly-fade-3.jpg"],
         faceType: "ဘဲဥပုံ၊ စတုရန်းပုံ",
@@ -437,10 +437,10 @@ const hairstyles = [
     // Curly Hair Styles (5)
     {
         id: 39,
-        name: "Burst Fade",
-        category: "fade",
+        name: "Curly Fade",
+        category: "curly",
         price: "၃၅၀၀ ကျပ်",
-        images: ["images/burst-fade-1.jpg", "images/burst-fade-2.jpg", "images/burst-fade-3.jpg"],
+        images: ["images/curly-fade-1.jpg", "images/curly-fade-2.jpg", "images/curly-fade-3.jpg"],
         faceType: "အားလုံးသော မျက်နှာအမျိုးအစားများ",
         hairLength: "၀.၅ လက်မမှ ၃ လက်မအထိ",
         serviceTime: "မိနစ် ၄၀",
