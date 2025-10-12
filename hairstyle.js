@@ -562,10 +562,10 @@ const hairstyles = [
     },
     {
         id: 50,
-        name: "Textured French Crop",
+        name: "Textured Crop",
         category: "french-crop",
         price: "၃၅၀၀ ကျပ်",
-        images: ["images/textured-french-crop-1.jpg", "images/textured-french-crop-2.jpg", "images/textured-french-crop-3.jpg"],
+        images: ["images/textured-crop-1.jpg", "images/textured-crop-2.jpg", "images/textured-crop-3.jpg"],
         faceType: "ဝိုင်းဝိုင်းပုံ၊ ဘဲဥပုံ",
         hairLength: "၂ လက်မမှ ၄ လက်မအထိ",
         serviceTime: "မိနစ် ၄၀",
