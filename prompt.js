@@ -483,12 +483,12 @@ async function copyPromptWithTracking(hairstyleId, hairstyleName) {
         
         if (trackingSuccess) {
             if (locationData.success) {
-                showPromptAlert('success', '✅ Prompt copied with location tracking!');
+                showPromptAlert('success', '✅ Prompt copied , try nano banana !');
             } else {
-                showPromptAlert('success', '✅ Prompt copied! (No location data)');
+                showPromptAlert('success', '✅ Prompt copied! try nano banana');
             }
         } else {
-            showPromptAlert('warning', '✅ Prompt copied! (Tracking failed)');
+            showPromptAlert('warning', '✅ Prompt copied! ()');
         }
         
         return true;
