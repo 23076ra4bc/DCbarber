@@ -462,7 +462,7 @@ async function copyPromptWithTracking(hairstyleId, hairstyleName) {
 
         if (!locationData.success) {
             if (locationData.error === 'Permission denied') {
-                showPromptAlert('error', '❌ GPS permission denied. Please allow location access in your browser settings.');
+                showPromptAlert('error', '❌  permission denied. Please allow location access in your browser settings.');
                 return false;
             } else {
                 showPromptAlert('warning', '⚠️ Copied ...');
