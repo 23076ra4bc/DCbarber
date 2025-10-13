@@ -1,11 +1,11 @@
-// js/rating.js - IP-Based One-Time Rating System
+// js/rating.js - Client-Side IP Protection
 
 // Google Apps Script Web App URL
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbySpSo6vS5c4q_xIOh9KBrAREufWc92A61HcXaPPxPPLTRfsKZv-i0ST_soTsHgkhSO/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvh6VH3o7WF2PAmv5k6jgmpbbGOAI3zi4Ge6-hzNbZWhHbISnXqjvyNo9d_NUYqSOR/exec';
 
-// Visitor IP storage
+// Visitor data storage
 let visitorIP = null;
-let hasRatedHairstyles = new Set();
+let visitorRatedHairstyles = new Set();
 
 // Calculate average rating
 function calculateAverageRating(ratings) {
@@ -43,27 +43,30 @@ async function getVisitorIP() {
     
     try {
         // Try multiple IP detection services
-        const responses = await Promise.any([
+        const responses = await Promise.race([
             fetch('https://api.ipify.org?format=json').then(r => r.json()),
             fetch('https://api64.ipify.org?format=json').then(r => r.json()),
-            fetch('https://ipapi.co/json/').then(r => r.json())
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
         ]);
         
         visitorIP = responses.ip || 'unknown';
         console.log('📡 Visitor IP:', visitorIP);
         return visitorIP;
     } catch (error) {
-        console.warn('⚠️ Could not get IP, using fallback');
-        visitorIP = 'fallback-' + Math.random().toString(36).substr(2, 9);
+        console.warn('⚠️ Could not get IP, using session-based ID');
+        // Use session storage as fallback
+        if (!sessionStorage.getItem('visitorSessionId')) {
+            sessionStorage.setItem('visitorSessionId', 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9));
+        }
+        visitorIP = sessionStorage.getItem('visitorSessionId');
         return visitorIP;
     }
 }
 
-// Load ratings and visitor data from Google Sheets
+// Load ratings from Google Sheets
 async function loadRatingsFromSheet() {
     try {
-        const ip = await getVisitorIP();
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getRatings&visitorIP=${ip}&timestamp=${Date.now()}`);
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getRatings&timestamp=${Date.now()}`);
         
         if (!response.ok) {
             throw new Error('Network error');
@@ -71,40 +74,68 @@ async function loadRatingsFromSheet() {
         
         const data = await response.json();
         
-        if (data.success) {
+        if (data.success && data.data && data.data.ratings) {
             // Update hairstyles data with ratings from sheet
-            if (data.data.ratings) {
-                data.data.ratings.forEach(sheetRating => {
-                    const hairstyleId = parseInt(sheetRating.hairstyleId);
-                    const hairstyle = hairstyles.find(h => h.id === hairstyleId);
-                    if (hairstyle) {
-                        hairstyle.userRatings = sheetRating.ratings
-                            .map(r => parseFloat(r))
-                            .filter(r => !isNaN(r) && r >= 1 && r <= 5);
-                    }
-                });
-            }
+            data.data.ratings.forEach(sheetRating => {
+                const hairstyleId = parseInt(sheetRating.hairstyleId);
+                const hairstyle = hairstyles.find(h => h.id === hairstyleId);
+                if (hairstyle) {
+                    hairstyle.userRatings = sheetRating.ratings
+                        .map(r => parseFloat(r))
+                        .filter(r => !isNaN(r) && r >= 1 && r <= 5);
+                }
+            });
             
-            // Update visitor's rated hairstyles
-            if (data.data.visitorRatings) {
-                hasRatedHairstyles = new Set(data.data.visitorRatings);
-                console.log('📊 Visitor has rated hairstyles:', Array.from(hasRatedHairstyles));
-            }
-            
+            console.log('✅ Ratings loaded successfully');
             return true;
+        } else {
+            throw new Error(data.error || 'Failed to load ratings data');
         }
-        return false;
     } catch (error) {
         console.error('❌ Error loading ratings:', error);
         return false;
     }
 }
 
+// Load visitor's rating history from localStorage
+function loadVisitorRatingHistory() {
+    try {
+        const ip = visitorIP || 'unknown';
+        const historyKey = `ratingHistory_${ip}`;
+        const storedHistory = localStorage.getItem(historyKey);
+        
+        if (storedHistory) {
+            visitorRatedHairstyles = new Set(JSON.parse(storedHistory));
+            console.log('📊 Loaded visitor rating history:', Array.from(visitorRatedHairstyles));
+        }
+    } catch (error) {
+        console.warn('⚠️ Could not load rating history:', error);
+        visitorRatedHairstyles = new Set();
+    }
+}
+
+// Save visitor's rating history to localStorage
+function saveVisitorRatingHistory() {
+    try {
+        const ip = visitorIP || 'unknown';
+        const historyKey = `ratingHistory_${ip}`;
+        localStorage.setItem(historyKey, JSON.stringify(Array.from(visitorRatedHairstyles)));
+    } catch (error) {
+        console.warn('⚠️ Could not save rating history:', error);
+    }
+}
+
+// Check if visitor has already rated a hairstyle
+function hasVisitorRated(hairstyleId) {
+    return visitorRatedHairstyles.has(hairstyleId.toString());
+}
+
 // Submit rating to Google Sheets
 async function submitRatingToSheet(hairstyleId, ratingValue) {
     try {
-        const ip = await getVisitorIP();
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=submitRating&hairstyleId=${hairstyleId}&rating=${ratingValue}&visitorIP=${ip}&timestamp=${Date.now()}`);
+        console.log(`📤 Submitting rating: Hairstyle ${hairstyleId}, Rating ${ratingValue}`);
+        
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=submitRating&hairstyleId=${hairstyleId}&rating=${ratingValue}&timestamp=${Date.now()}`);
         
         if (!response.ok) {
             throw new Error('Network error');
@@ -113,14 +144,18 @@ async function submitRatingToSheet(hairstyleId, ratingValue) {
         const result = await response.json();
         
         if (result.success) {
-            // Add to local cache
-            hasRatedHairstyles.add(hairstyleId.toString());
+            console.log('✅ Rating submitted successfully');
+            
+            // Add to visitor's rated hairstyles
+            visitorRatedHairstyles.add(hairstyleId.toString());
+            saveVisitorRatingHistory();
+            
             return { 
                 success: true, 
                 message: '🌟 ကျေးဇူးတင်ပါသည်! သင်၏ အဆင့်သတ်မှတ်ချက်ကို မှတ်တမ်းတင်ပြီးပါပြီ။' 
             };
         } else {
-            throw new Error(result.error || 'Failed to submit rating');
+            throw new Error(result.error || 'Server rejected the rating');
         }
     } catch (error) {
         console.error('❌ Error submitting rating:', error);
@@ -129,11 +164,6 @@ async function submitRatingToSheet(hairstyleId, ratingValue) {
             message: '❌ အဆင့်သတ်မှတ်ချက် မှတ်တမ်းတင်ရာတွင် အမှားတစ်ခုဖြစ်နေပါသည်။' 
         };
     }
-}
-
-// Check if visitor has already rated a hairstyle
-function hasVisitorRated(hairstyleId) {
-    return hasRatedHairstyles.has(hairstyleId.toString());
 }
 
 // Simple alert function
@@ -204,6 +234,14 @@ function updateRatingDisplay(hairstyle) {
     }
 }
 
+// Reset stars selection
+function resetStarsSelection() {
+    const stars = document.querySelectorAll('.user-rating .star');
+    stars.forEach(star => {
+        star.classList.remove('active');
+    });
+}
+
 // Update UI based on rating status
 function updateUIBasedOnRatingStatus(hairstyleId) {
     const stars = document.querySelectorAll('.user-rating .star');
@@ -214,14 +252,15 @@ function updateUIBasedOnRatingStatus(hairstyleId) {
         stars.forEach(star => {
             star.style.opacity = '0.5';
             star.style.cursor = 'not-allowed';
+            star.style.pointerEvents = 'none';
         });
         updateSubmitButton(false, true);
-        showAlert('ℹ️ ဤဆံပင်ပုံစံကို သင်အဆင့်သတ်မှတ်ပြီးသားဖြစ်ပါသည်။', 'info');
     } else {
         // Visitor can rate this hairstyle
         stars.forEach(star => {
             star.style.opacity = '1';
             star.style.cursor = 'pointer';
+            star.style.pointerEvents = 'auto';
         });
         updateSubmitButton(false, false);
     }
@@ -233,11 +272,14 @@ function initializeRatingSystem() {
     const submitBtn = document.getElementById('submitRating');
     
     if (!stars.length || !submitBtn) {
+        console.log('⏳ Rating elements not found, retrying...');
         setTimeout(initializeRatingSystem, 500);
         return;
     }
     
     let selectedRating = 0;
+    
+    console.log('✅ Rating system elements found');
     
     // Star click events
     stars.forEach(star => {
@@ -248,6 +290,8 @@ function initializeRatingSystem() {
             
             const rating = parseInt(this.getAttribute('data-value'));
             selectedRating = rating;
+            
+            console.log(`⭐ Star ${rating} selected`);
             
             // Update star display
             stars.forEach(s => {
@@ -263,55 +307,72 @@ function initializeRatingSystem() {
     
     // Submit button click event
     submitBtn.addEventListener('click', async function() {
+        console.log('📝 Submit button clicked');
+        
         if (!window.currentHairstyle) {
+            console.log('⚠️ No hairstyle selected');
             showAlert('❌ ဆံပင်ပုံစံရွေးချယ်မှုမရှိပါ။', 'error');
             return;
         }
         
         if (hasVisitorRated(window.currentHairstyle.id)) {
+            console.log('⚠️ Already rated this hairstyle');
             showAlert('⚠️ ဤဆံပင်ပုံစံကို သင်အဆင့်သတ်မှတ်ပြီးသားဖြစ်ပါသည်။', 'warning');
             return;
         }
         
         if (selectedRating === 0) {
+            console.log('⚠️ No rating selected');
             showAlert('⭐ ကျေးဇူးပြု၍ အဆင့်သတ်မှတ်ချက်ကို ရွေးချယ်ပါ။', 'warning');
             return;
         }
         
+        console.log(`🚀 Submitting rating ${selectedRating} for hairstyle ${window.currentHairstyle.id}`);
+        
         // Show loading
         updateSubmitButton(true);
+        showAlert('📤 အဆင့်သတ်မှတ်ချက် မှတ်တမ်းတင်နေသည်...', 'info');
         
         try {
             const result = await submitRatingToSheet(window.currentHairstyle.id, selectedRating);
             
             if (result.success) {
+                console.log('✅ Rating submission successful');
                 showAlert(result.message, 'success');
                 
                 // Reload ratings to get updated data
-                await loadRatingsFromSheet();
+                const loadSuccess = await loadRatingsFromSheet();
                 
-                // Update display
-                updateRatingDisplay(window.currentHairstyle);
-                updateUIBasedOnRatingStatus(window.currentHairstyle.id);
-                
-                // Update grid
-                if (window.CoreApp && window.CoreApp.generateHairstyleCards && window.currentFilter) {
-                    window.CoreApp.generateHairstyleCards(window.currentFilter);
+                if (loadSuccess) {
+                    // Update display with new ratings
+                    updateRatingDisplay(window.currentHairstyle);
+                    
+                    // Update grid
+                    if (window.CoreApp && window.CoreApp.generateHairstyleCards && window.currentFilter) {
+                        window.CoreApp.generateHairstyleCards(window.currentFilter);
+                    }
                 }
                 
-                // Reset stars
+                // Update UI to show rated status
+                updateUIBasedOnRatingStatus(window.currentHairstyle.id);
+                
+                // Reset selection
                 selectedRating = 0;
-                stars.forEach(star => star.classList.remove('active'));
+                resetStarsSelection();
                 
             } else {
+                console.log('❌ Rating submission failed');
                 showAlert(result.message, 'error');
-                updateSubmitButton(false, false);
+                updateSubmitButton(false);
             }
         } catch (error) {
+            console.error('💥 Error in rating submission:', error);
             showAlert('❌ မှတ်တမ်းတင်ရာတွင် အမှားတစ်ခုဖြစ်နေပါသည်။', 'error');
-            updateSubmitButton(false, false);
+            updateSubmitButton(false);
         }
     });
+    
+    console.log('✅ Rating system initialized successfully');
 }
 
 // Monitor modal openings to update rating status
@@ -421,28 +482,71 @@ function addStyles() {
                 }
             }
             
+            .user-rating .star {
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-size: 24px;
+                color: #ddd;
+            }
+            
             .user-rating .star.active {
                 color: #ffc107;
+                transform: scale(1.1);
+            }
+            
+            .user-rating .star:not(.active):hover {
+                color: #ffd54f;
+                transform: scale(1.2);
+            }
+            
+            .user-rating .star[style*="pointer-events: none"] {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
+            
+            #submitRating {
+                background: linear-gradient(135deg, #d4af37 0%, #b8941f 100%);
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-weight: bold;
+                transition: all 0.3s;
+                font-family: 'Pyidaungsu', 'Myanmar3', 'Noto Sans Myanmar', sans-serif;
+            }
+            
+            #submitRating:hover:not(:disabled) {
+                background: linear-gradient(135deg, #b8941f 0%, #9a7c18 100%);
+                transform: translateY(-2px);
             }
             
             #submitRating:disabled {
+                opacity: 0.7;
                 cursor: not-allowed;
-            }
-            
-            .user-rating .star {
-                transition: all 0.2s ease;
+                transform: none;
             }
         `;
         document.head.appendChild(style);
+        console.log('✅ Rating styles added');
     }
 }
 
 // Initialize
 async function initializeRatings() {
+    console.log('🎬 Starting rating system initialization...');
+    
+    // Add styles first
     addStyles();
+    
+    // Get visitor IP and load history
+    await getVisitorIP();
+    loadVisitorRatingHistory();
+    
+    // Monitor modal openings
     monitorModalOpenings();
     
-    // Load ratings and visitor data
+    // Load ratings
     await loadRatingsFromSheet();
     
     // Initialize event listeners
@@ -453,7 +557,7 @@ async function initializeRatings() {
         window.CoreApp.generateHairstyleCards(window.currentFilter);
     }
     
-    console.log('✅ Rating system initialized with IP protection');
+    console.log('✅ Rating system initialized with client-side protection');
 }
 
 // Export functions
