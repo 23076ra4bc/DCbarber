@@ -21,10 +21,9 @@ const hairstyleDetails = {
         name: "Drop Fade",
         details: `**Fade Line:** A high, clean fade that curves distinctly down (drops) behind the ear toward the nape. Fades down to a skin-level finish at the bottom. **Top Hair:** 3-4 inches long, heavily textured, and styled forward into a messy, visible fringe (French Crop influence). **Color:** Natural dark brown, slightly damp/wet look.`
     },
-
     6: {
-        name: "Burst Fade",
-        details: `A circular fade that radiates outwards from behind the ear, leaving the hair at the back of the neck longer. Top hair is 3 inches long and uniform, styled slightly messy.`
+        name: "Curly Fade",
+        details: `**Top Hair:** 4-5 inches of natural, tight, defined curls. Curls must be well-hydrated and styled with visible coil separation. **Sides:** A crisp **Mid Skin Fade** that starts at the temple and blends sharply down to skin level (zero). **Contrast:** Extremely high contrast between the dense volume of the curls and the clean, bald fade. **Shape:** Maintains a slightly squared or round shape on top.`
     },
     7: {
         name: "Taper Fade",
