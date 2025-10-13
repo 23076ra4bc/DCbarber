@@ -1,3 +1,12 @@
+
+// prompt.js - Fixed Immediate Enable Version
+
+// Google Apps Script Web App URL for Prompt Tracking
+const PROMPT_TRACKING_URL = 'https://script.google.com/macros/s/AKfycbxxbSyLPAyj6fcCWEoEFNsmt5gFIMU8o28X1hDAhmFM5Z511RGkHDhV9g3HTkEmGMnq/exec';
+
+// Track currently rated hairstyles in session
+let sessionRatedHairstyles = new Set();
+
 // Professional Hairstyle Details Database - Updated with highly descriptive and visual details for AI generation
 const hairstyleDetails = {
     // Fade Hairstyles (7)
@@ -278,7 +287,9 @@ const hairstyleDetails = {
     }
 };
 
-// AI Image Generation Prompt Template - Updated to prioritize fixed identity and hairstyle accuracy
+
+
+// AI Image Generation Prompt Template
 const PROMPT_TEMPLATE = `Generate 3 ultra-realistic portrait images in a horizontal 1×3 grid layout with consistent framing, featuring a single, fixed facial identity:
 
 · Left panel: Front-facing view (direct camera view)
@@ -312,273 +323,468 @@ function generatePrompt(hairstyleId) {
     const hairstyle = hairstyleDetails[hairstyleId];
     if (!hairstyle) return null;
 
-    // Replace the placeholders with the selected hairstyle name and details
     return PROMPT_TEMPLATE
         .replace(/\[HAIRSTYLE_NAME\]/g, hairstyle.name)
         .replace('[HAIRSTYLE_DETAILS]', hairstyle.details);
 }
 
-// Copy to Clipboard
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        showCopySuccess();
-    }).catch(err => {
-        // Fallback
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        showCopySuccess();
+// Check if current hairstyle is rated (combined check)
+function isCurrentHairstyleRated() {
+    if (!window.currentHairstyle) return false;
+    
+    // Check session first (immediate)
+    if (sessionRatedHairstyles.has(window.currentHairstyle.id)) {
+        return true;
+    }
+    
+    // Then check rating system
+    if (window.RatingSystem && window.RatingSystem.hasVisitorRated) {
+        return window.RatingSystem.hasVisitorRated(window.currentHairstyle.id);
+    }
+    
+    return false;
+}
+
+// Mark hairstyle as rated in session
+function markHairstyleAsRated(hairstyleId) {
+    sessionRatedHairstyles.add(hairstyleId);
+    console.log('✅ Marked hairstyle as rated in session:', hairstyleId);
+}
+
+// Get GPS coordinates
+async function getGPSLocation() {
+    return new Promise((resolve) => {
+        if (!navigator.geolocation) {
+            resolve({ 
+                success: false, 
+                error: 'Geolocation not supported',
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown'
+            });
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                resolve({
+                    success: true,
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown'
+                });
+            },
+            (error) => {
+                let errorMessage = 'Unknown error';
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = 'Permission denied';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = 'Position unavailable';
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = 'Request timeout';
+                        break;
+                }
+                resolve({ 
+                    success: false, 
+                    error: errorMessage,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown'
+                });
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 60000
+            }
+        );
     });
 }
 
-// Show Success Message
-function showCopySuccess() {
-    const notification = document.createElement('div');
-    notification.className = 'prompt-copy-success';
-    notification.innerHTML = `
-        <div class="success-content">
-            <i class="fas fa-check-circle"></i>
-            <div class="success-text">
-                <strong>Prompt Copied!</strong>
-                <span>Ready for AI generation</span>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), 3000);
+// Track prompt copy to Google Sheets
+async function trackPromptCopy(hairstyleId, hairstyleName, locationData) {
+    try {
+        const params = new URLSearchParams({
+            action: 'trackPromptCopy',
+            hairstyleId: hairstyleId,
+            hairstyleName: hairstyleName,
+            timestamp: new Date().toISOString(),
+            latitude: locationData.latitude || '',
+            longitude: locationData.longitude || '',
+            timezone: locationData.timezone || 'Unknown'
+        });
+
+        const response = await fetch(`${PROMPT_TRACKING_URL}?${params}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        return result.success;
+    } catch (error) {
+        console.error('Tracking error:', error);
+        return false;
+    }
 }
 
-// Add Prompt Button to Modal - Horizontal layout with rating button
+// Show alert messages
+function showPromptAlert(type, message) {
+    const existingAlert = document.querySelector('.prompt-alert');
+    if (existingAlert) existingAlert.remove();
+
+    const alert = document.createElement('div');
+    alert.className = `prompt-alert prompt-alert-${type}`;
+    
+    const icons = { success: '✓', error: '✗', warning: '!', info: 'i' };
+    
+    alert.innerHTML = `
+        <div class="alert-content">
+            <span class="alert-icon">${icons[type] || 'i'}</span>
+            <span class="alert-message">${message}</span>
+            <button class="alert-close">×</button>
+        </div>
+    `;
+
+    alert.querySelector('.alert-close').addEventListener('click', () => alert.remove());
+    document.body.appendChild(alert);
+
+    setTimeout(() => {
+        if (alert.parentNode) alert.remove();
+    }, 5000);
+}
+
+// Copy to Clipboard with GPS tracking
+async function copyPromptWithTracking(hairstyleId, hairstyleName) {
+    try {
+        showPromptAlert('info', '📍 Requesting GPS permission for prompt copy...');
+
+        const locationData = await getGPSLocation();
+
+        if (!locationData.success) {
+            if (locationData.error === 'Permission denied') {
+                showPromptAlert('error', '❌ GPS permission denied. Please allow location access in your browser settings.');
+                return false;
+            } else {
+                showPromptAlert('warning', '⚠️ Continuing without GPS data...');
+            }
+        } else {
+            showPromptAlert('info', '📍 GPS location obtained!');
+        }
+
+        const prompt = generatePrompt(hairstyleId);
+        if (!prompt) {
+            showPromptAlert('error', '❌ Failed to generate prompt.');
+            return false;
+        }
+
+        await navigator.clipboard.writeText(prompt);
+
+        const trackingSuccess = await trackPromptCopy(hairstyleId, hairstyleName, locationData);
+        
+        if (trackingSuccess) {
+            if (locationData.success) {
+                showPromptAlert('success', '✅ Prompt copied with location tracking!');
+            } else {
+                showPromptAlert('success', '✅ Prompt copied! (No location data)');
+            }
+        } else {
+            showPromptAlert('warning', '✅ Prompt copied! (Tracking failed)');
+        }
+        
+        return true;
+
+    } catch (error) {
+        console.error('Copy process error:', error);
+        
+        if (error.name === 'SecurityError' || error.message.includes('permission')) {
+            showPromptAlert('error', '❌ Clipboard permission denied. Please allow clipboard access.');
+        } else {
+            showPromptAlert('error', '❌ Failed to copy prompt. Please try again.');
+        }
+        return false;
+    }
+}
+
+// Update copy button state based on rating status - FIXED VERSION
+function updateCopyButtonState() {
+    const copyButton = document.getElementById('generatePromptBtn');
+    if (!copyButton || !window.currentHairstyle) return;
+
+    const isRated = isCurrentHairstyleRated();
+
+    if (isRated) {
+        copyButton.disabled = false;
+        copyButton.style.opacity = '1';
+        copyButton.style.cursor = 'pointer';
+        copyButton.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        copyButton.title = 'Click to copy AI prompt (GPS required)';
+    } else {
+        copyButton.disabled = true;
+        copyButton.style.opacity = '0.5';
+        copyButton.style.cursor = 'not-allowed';
+        copyButton.style.background = 'linear-gradient(135deg, #95a5f9 0%, #9d8bb3 100%)';
+        copyButton.title = 'Please rate this hairstyle first to copy the prompt';
+    }
+}
+
+// Monitor rating submissions to enable copy button - FIXED VERSION
+function monitorRatingSubmissions() {
+    if (!window.RatingSystem) {
+        setTimeout(monitorRatingSubmissions, 1000);
+        return;
+    }
+
+    // Override the submit function to immediately enable copy button
+    const originalSubmit = window.RatingSystem.submitRatingToSheet;
+    
+    window.RatingSystem.submitRatingToSheet = async function(hairstyleId, ratingValue) {
+        const result = await originalSubmit.call(this, hairstyleId, ratingValue);
+        
+        if (result.success && window.currentHairstyle && hairstyleId === window.currentHairstyle.id) {
+            // Immediately mark as rated and enable copy button
+            markHairstyleAsRated(hairstyleId);
+            updateCopyButtonState();
+            
+            // Show success message for copy button
+            setTimeout(() => {
+                showPromptAlert('success', '⭐ Rating submitted! Copy button is now enabled.');
+            }, 500);
+        }
+        
+        return result;
+    };
+
+    // Also monitor the existing submit button click
+    const originalSubmitBtn = document.getElementById('submitRating');
+    if (originalSubmitBtn) {
+        originalSubmitBtn.addEventListener('click', function() {
+            // This will be triggered before the actual submission
+            setTimeout(() => {
+                if (window.currentHairstyle) {
+                    markHairstyleAsRated(window.currentHairstyle.id);
+                    updateCopyButtonState();
+                }
+            }, 100);
+        });
+    }
+}
+
+// Add Prompt Button to Modal
 function addPromptButtonToModal() {
     setTimeout(() => {
         const ratingSection = document.querySelector('.rating-section');
-        if (ratingSection && !document.getElementById('generatePromptBtn')) {
-            // Create horizontal button container
-            const buttonContainer = document.createElement('div');
+        if (!ratingSection || document.getElementById('generatePromptBtn')) return;
+
+        // Create prompt button
+        const promptButton = document.createElement('button');
+        promptButton.id = 'generatePromptBtn';
+        promptButton.className = 'btn prompt-copy-btn';
+        promptButton.innerHTML = '<i class="fas fa-copy"></i> Prompt Copy';
+        promptButton.disabled = true;
+        
+        promptButton.addEventListener('click', async () => {
+            if (window.currentHairstyle) {
+                await copyPromptWithTracking(window.currentHairstyle.id, window.currentHairstyle.name);
+            } else {
+                showPromptAlert('error', '❌ No hairstyle selected.');
+            }
+        });
+
+        // Find or create button container
+        let buttonContainer = ratingSection.querySelector('.horizontal-button-container');
+        if (!buttonContainer) {
+            buttonContainer = document.createElement('div');
             buttonContainer.className = 'horizontal-button-container';
             
-            // Create prompt button
-            const promptButton = document.createElement('button');
-            promptButton.id = 'generatePromptBtn';
-            promptButton.className = 'btn prompt-copy-btn';
-            promptButton.innerHTML = '<i class="fas fa-copy"></i> Prompt Copy';
-            
-            promptButton.addEventListener('click', () => {
-                if (window.currentHairstyle) {
-                    const prompt = generatePrompt(window.currentHairstyle.id);
-                    if (prompt) {
-                        copyToClipboard(prompt);
-                    }
-                }
-            });
-            
-            // Add both buttons to container
             const submitRatingBtn = document.getElementById('submitRating');
             if (submitRatingBtn) {
-                // Move submit rating button into container
-                const submitRatingClone = submitRatingBtn.cloneNode(true);
-                submitRatingBtn.remove();
-                
-                buttonContainer.appendChild(submitRatingClone);
-                buttonContainer.appendChild(promptButton);
-                
-                // Add event listener to the cloned submit button
-                submitRatingClone.addEventListener('click', function() {
-                    if (userRating > 0 && currentHairstyle) {
-                        // Show loading state
-                        const originalText = this.textContent;
-                        this.textContent = 'သိမ်းဆည်းနေသည်...';
-                        this.disabled = true;
-                        
-                        // Simulate saving process
-                        setTimeout(() => {
-                            try {
-                                // Add rating to current hairstyle for current session only
-                                currentHairstyle.userRatings.push(userRating);
-                                
-                                // Update display
-                                const avgRating = calculateAverageRating(currentHairstyle.userRatings);
-                                if (starsContainer && ratingText) {
-                                    starsContainer.textContent = generateStarRating(avgRating);
-                                    ratingText.textContent = ` (${currentHairstyle.userRatings.length} ယောက်သတ်မှတ်ထားသည်)`;
-                                }
-                                
-                                // Reset user rating
-                                userRating = 0;
-                                userRatingStars.forEach(star => {
-                                    star.classList.remove('active');
-                                });
-                                
-                                // Update grid display
-                                generateHairstyleCards(currentFilter);
-                                
-                                alert('ကျေးဇူးတင်ပါသည်! သင်၏ အဆင့်သတ်မှတ်ချက်ကို ယာယီသိမ်းဆည်းပြီးပါပြီ။\n(ဤအဆင့်သတ်မှတ်ချက်သည် page ကို refresh လုပ်လျှင် ပျက်သွားမည်)');
-                            } catch (error) {
-                                console.error('Error in rating submission:', error);
-                                alert('အဆင့်သတ်မှတ်ချက် မှတ်တမ်းတင်ရာတွင် အမှားတစ်ခုဖြစ်နေပါသည်။');
-                            } finally {
-                                // Reset button state
-                                this.textContent = originalText;
-                                this.disabled = false;
-                            }
-                        }, 500);
-                    } else {
-                        alert('ကျေးဇူးပြု၍ အဆင့်သတ်မှတ်ချက်ကို ရွေးချယ်ပါ။');
-                    }
-                });
-                
-                ratingSection.appendChild(buttonContainer);
-            } else {
-                // Fallback if submit button not found
-                buttonContainer.appendChild(promptButton);
-                ratingSection.appendChild(buttonContainer);
+                buttonContainer.appendChild(submitRatingBtn);
+            }
+            
+            ratingSection.appendChild(buttonContainer);
+        }
+
+        buttonContainer.appendChild(promptButton);
+        updateCopyButtonState();
+
+    }, 100);
+}
+
+// Monitor modal openings
+function monitorModalOpenings() {
+    const originalOpen = window.openHairstyleModal;
+    
+    if (!originalOpen) {
+        setTimeout(monitorModalOpenings, 1000);
+        return;
+    }
+    
+    window.openHairstyleModal = function(hairstyle) {
+        originalOpen(hairstyle);
+        
+        setTimeout(() => {
+            addPromptButtonToModal();
+            updateCopyButtonState();
+        }, 50);
+    };
+}
+
+// Add CSS styles
+function addPromptStyles() {
+    if (document.querySelector('#prompt-styles')) return;
+
+    const style = document.createElement('style');
+    style.id = 'prompt-styles';
+    style.textContent = `
+        .horizontal-button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .horizontal-button-container .btn {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+            min-height: 44px;
+            font-family: 'Pyidaungsu', 'Myanmar3', 'Noto Sans Myanmar', sans-serif;
+        }
+        
+        /* Rating Button */
+        #submitRating {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        #submitRating:hover:not(:disabled) {
+            background: linear-gradient(135deg, #218838 0%, #1e9e8a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+        
+        /* Prompt Button - Enabled State */
+        .prompt-copy-btn:not(:disabled) {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .prompt-copy-btn:not(:disabled):hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Prompt Button - Disabled State */
+        .prompt-copy-btn:disabled {
+            background: linear-gradient(135deg, #95a5f9 0%, #9d8bb3 100%);
+            color: white;
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Alert Styles */
+        .prompt-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            border-left: 5px solid #ddd;
+            z-index: 10000;
+            max-width: 400px;
+            animation: slideInRight 0.3s ease;
+            font-family: 'Pyidaungsu', 'Myanmar3', 'Noto Sans Myanmar', sans-serif;
+        }
+        
+        .prompt-alert-success { border-left-color: #00b894; background: #00b894; color: white; }
+        .prompt-alert-error { border-left-color: #e17055; background: #e17055; color: white; }
+        .prompt-alert-warning { border-left-color: #fdcb6e; background: #fdcb6e; color: white; }
+        .prompt-alert-info { border-left-color: #74b9ff; background: #74b9ff; color: white; }
+        
+        .alert-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        
+        .alert-icon { 
+            font-weight: bold; 
+            font-size: 18px;
+            min-width: 20px;
+        }
+        
+        .alert-message { 
+            flex: 1; 
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .alert-close {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            opacity: 0.7;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        
+        .alert-close:hover { 
+            opacity: 1;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @media (max-width: 480px) {
+            .horizontal-button-container {
+                flex-direction: column;
+            }
+            
+            .prompt-alert {
+                right: 10px;
+                left: 10px;
+                max-width: none;
             }
         }
-    }, 100);
+    `;
+    
+    document.head.appendChild(style);
 }
 
 // Initialize Prompt System
 function initializePromptSystem() {
-    console.log('🚀 Initializing prompt system...');
-    
-    // Add styles for horizontal button layout
-    if (!document.querySelector('#prompt-styles')) {
-        const style = document.createElement('style');
-        style.id = 'prompt-styles';
-        style.textContent = `
-            .horizontal-button-container {
-                display: flex;
-                gap: 10px;
-                margin-top: 15px;
-                width: 100%;
-            }
-            
-            .horizontal-button-container .btn {
-                flex: 1;
-                padding: 10px 15px !important;
-                border-radius: 5px !important;
-                cursor: pointer !important;
-                font-weight: bold !important;
-                font-size: 0.9rem !important;
-                transition: all 0.3s ease !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                gap: 8px !important;
-                border: none !important;
-                min-height: 44px;
-            }
-            
-            /* Rating Button Styles */
-            #submitRating {
-                background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
-                color: white !important;
-            }
-            
-            #submitRating:hover {
-                background: linear-gradient(135deg, #218838 0%, #1e9e8a 100%) !important;
-                transform: translateY(-1px);
-                box-shadow: 0 2px 8px rgba(40, 167, 69, 0.4);
-            }
-            
-            /* Prompt Button Styles */
-            .prompt-copy-btn {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-                color: white !important;
-            }
-            
-            .prompt-copy-btn:hover {
-                background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%) !important;
-                transform: translateY(-1px);
-                box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
-            }
-            
-            .prompt-copy-btn i {
-                font-size: 0.9em;
-            }
-            
-            /* Success Notification */
-            .prompt-copy-success {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
-                color: white;
-                padding: 12px 16px;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0, 184, 148, 0.3);
-                z-index: 10000;
-                animation: slideInRight 0.3s ease;
-            }
-            
-            .success-content {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-            
-            .success-content i {
-                font-size: 1.2rem;
-            }
-            
-            .success-text {
-                display: flex;
-                flex-direction: column;
-            }
-            
-            .success-text strong {
-                font-size: 0.9rem;
-            }
-            
-            .success-text span {
-                font-size: 0.75rem;
-                opacity: 0.9;
-            }
-            
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
-            
-            /* Responsive adjustments */
-            @media (max-width: 480px) {
-                .horizontal-button-container {
-                    flex-direction: column;
-                    gap: 8px;
-                }
-                
-                .horizontal-button-container .btn {
-                    min-height: 40px;
-                    font-size: 0.85rem !important;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    // Monitor modal openings
-    const originalOpenModal = window.openHairstyleModal;
-    if (originalOpenModal) {
-        window.openHairstyleModal = function(hairstyle) {
-            originalOpenModal(hairstyle);
-            window.currentHairstyle = hairstyle;
-            setTimeout(addPromptButtonToModal, 50);
-        };
-    }
-    
-    console.log('✅ Prompt system initialized - All 63 styles supported');
+    addPromptStyles();
+    monitorModalOpenings();
+    monitorRatingSubmissions();
 }
 
-// Wait for dependencies
+// Wait for dependencies and initialize
 function waitForDependencies() {
     if (typeof window.openHairstyleModal !== 'undefined') {
         initializePromptSystem();
@@ -594,11 +800,15 @@ if (document.readyState === 'loading') {
     waitForDependencies();
 }
 
-// Export functions
+// Export for global access
 window.PromptGenerator = {
     generatePrompt,
-    copyToClipboard,
-    hairstyleDetails
+    copyPromptWithTracking,
+    trackPromptCopy,
+    getGPSLocation,
+    updateCopyButtonState,
+    markHairstyleAsRated,
+    isCurrentHairstyleRated
 };
 
-console.log('📝 Prompt.js loaded - 63 professional hairstyles ready');
+console.log('📝 Prompt.js loaded - Fixed immediate enable');
