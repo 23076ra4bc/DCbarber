@@ -465,10 +465,10 @@ async function copyPromptWithTracking(hairstyleId, hairstyleName) {
                 showPromptAlert('error', '❌ GPS permission denied. Please allow location access in your browser settings.');
                 return false;
             } else {
-                showPromptAlert('warning', '⚠️ Continuing without GPS data...');
+                showPromptAlert('warning', '⚠️ Copied ...');
             }
         } else {
-            showPromptAlert('info', '📍 GPS location obtained!');
+            showPromptAlert('info', '📍 Generating prompt!');
         }
 
         const prompt = generatePrompt(hairstyleId);
