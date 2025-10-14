@@ -159,7 +159,7 @@ const hairstyleDetails = {
     // Slick Back Styles (5)
     34: {
         name: "Classic Slick Back",
-        details: `6-inch hair on top, combed aggressively straight back, flat against the head. Styled with heavy, oil-based pomade for intense, rigid shine. Sides are tightly tapered.`
+        details: `6-inch hair on top, combed aggressively straight back, flat against the head. Styled with heavy,low oil-based pomade for intense, rigid shine. Sides are short tightly tapered.`
     },
     35: {
         name: "Textured Slick Back",
