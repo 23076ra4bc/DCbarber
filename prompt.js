@@ -20,7 +20,7 @@ const hairstyleDetails = {
     },
     3: {
         name: "High Fade",
-        details: `A dramatic High Fade cut very short near the crown. Top hair is 5-6 inches long, slicked back or styled with significant height and shine for maximum contrast.`
+        details: `A dramatic High Fade cut very short near the crown. Top hair is 1.5-2 inches long, side part or styled with significant height  for Most contrast.`
     },
     4: {
         name: "Skin Fade (Bald Fade)",
