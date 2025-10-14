@@ -185,7 +185,7 @@ const hairstyleDetails = {
     },
     40: {
         name: "Curly Top",
-        details: `Long, loose, natural curly hair (5-6 inches) on top, styled with maximum volume. Sides are cut short with scissors (#3 guard) to frame the curls.`
+        details: `Start crow to Forehead are natural curly hair (3-4 inches) ,   styled with maximum volume.back  and Sides are hight fade hight volume.`
     },
     41: {
         name: "Textured Curls",
