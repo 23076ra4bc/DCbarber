@@ -144,8 +144,9 @@ const hairstyleDetails = {
     },
     31: {
         name: "Textured Side Part",
-        details: `The 4-inch top hair is parted with a soft, natural line and styled to the side with visible layers and texture, using a matte product for volume.`
+        details: `**Top Hair:** 3.5 to 4.5 inches long, cut with many layers and heavily textured using shears for separation and natural volume. Styled with a **natural, soft parting line** and swept to one side. **Sides:** A **Low Taper Fade** is applied, blending gradually from #3 down to #1, maintaining minimal contrast for a softer look. **Styling:** Styled with a **matte clay or paste** for a dry, natural finish and visible piecey texture. **Volume:** Features medium volume; not slicked flat.`
     },
+
     32: {
         name: "Fade Side Part",
         details: `A clean side part on top (3 inches long), paired with a Mid Fade on the sides. The contrast is sharp and clean.`
