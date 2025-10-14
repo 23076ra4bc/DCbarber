@@ -20,7 +20,7 @@ const hairstyleDetails = {
     },
     3: {
         name: "High Fade",
-        details: `A dramatic High Fade cut. Top hair is 1.5-2 inches long, side part or styled with significant height  for Most contrast.`
+        details: `A dramatic High Fade cut . Top hair is 2 inches long . side part or styled with significant height  for Most contrast..`
     },
     4: {
         name: "Skin Fade (Bald Fade)",
