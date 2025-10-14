@@ -16,7 +16,7 @@ const hairstyleDetails = {
     },
     2: {
         name: "Mid Fade",
-        details: `A balanced Mid Fade starting at the temple. Top hair is 4-5 inches, heavily textured and styled slightly forward for a modern, dry finish. Excellent contrast between top and sides.`
+        details: `A balanced Mid Fade starting at the temple. Top hair is 4-5 inches, heavily textured and styled slightly forward for a modern, dry finish. Excellent contrast between top and sides.Side and Back are  hight skin fade.`
     },
     3: {
         name: "High Fade",
