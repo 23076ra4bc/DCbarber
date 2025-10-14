@@ -1,7 +1,7 @@
 // slider.js - Image slider functionality
 
 let autoSlideInterval;
-const AUTO_SLIDE_INTERVAL = 3000; // 3 seconds
+const AUTO_SLIDE_INTERVAL = 1500; // 1.5 seconds
 
 // Start auto slide
 function startAutoSlide() {
