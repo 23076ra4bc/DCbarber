@@ -12,7 +12,7 @@ function toggleFabMenu() {
 async function nativeShare() {
     const websiteUrl = window.location.href;
     const websiteTitle = "Diamond Crown Barber Shop - ဆံပင်ညှပ်ဆိုင်";
-    const websiteDescription = "Diamond Crown ဆံပင်ညှပ်ဆိုင်သည် အတွေ့အကြုံရှိ ဆံပင်ညှပ်ပညာရှင်များနှင့် ခေတ်မီနည်းစနစ်များဖြင့် အဆင့်မြင့် ဆံပင်ညှပ်ဝန်ဆောင်မှုများ ပေးဝေနေပါသည်။";
+    const websiteDescription = "Diamond Crown ဆံပင်ညှပ်ဆိုင်သည် မျက်နှာအမျိုးအစားအားလုံးအတွက် လိုက်ဖတ်မည့် ဆံပင်ပုံစံများကို ကျွမ်းကျင်စွာ ပြုလုပ်ပေးနေပါသည်။";
 
     if (navigator.share) {
         try {
