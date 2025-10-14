@@ -153,7 +153,7 @@ const hairstyleDetails = {
     },
     33: {
         name: "Curtain Part",
-        details: `The 6-inch hair is parted directly down the center, falling symmetrically to frame the face on both sides. Wavy texture, natural movement.`
+        details: `The 4-inch hair is parted directly down the center, falling symmetrically to frame the face on both sides.very Wavy texture, natural movement.`
     },
 
     // Slick Back Styles (5)
