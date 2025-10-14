@@ -135,8 +135,9 @@ const hairstyleDetails = {
     // Side Part Styles (5)
     29: {
         name: "Classic Side Part",
-        details: `The 4-inch top hair is precisely parted and combed flat to the side using a high-shine product. Sides and back are long, neatly tapered with scissors.`
+        details: `**Top Hair:** Maintained at a uniform length of 2 to 2.5 inches. Styled flat and neatly combed to one side. **Parting:** A razor is used to shave a **perfectly straight, thin, and defined line (Hard Part)** separating the top and side sections. **Sides:** A high-contrast **Mid Skin Fade** is applied, starting at the temple/mid-level and blending aggressively down to a **zero-level/skin finish**. The lowest 0.5 inch is completely razor-shaved. **Finish:** Styled with **high-shine pomade** for a clean, sleek, glossy, and highly professional geometric appearance.`
     },
+
     30: {
         name: "Hard Part",
         details: `The 3-inch top hair is combed over. A razor is used to shave a bold, distinct line where the part is, sharply separating the long top from the short sides (#1 guard).`
