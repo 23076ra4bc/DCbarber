@@ -12,7 +12,7 @@ const hairstyleDetails = {
     // Fade Hairstyles (7)
     1: {
         name: "Low Fade",
-        details: `A clean Low Fade that starts just above the ear. Top hair is 3 inches long, swept slightly to the side with natural volume and a matte finish. Sides blend cleanly to skin at the very bottom.`
+        details: `A clean Low Fade that starts just above the ear. Top hair is 2 inches long. Side and back are blend cleanly to skin at the very bottom.`
     },
     2: {
         name: "Mid Fade",
