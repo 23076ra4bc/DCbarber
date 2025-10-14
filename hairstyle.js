@@ -383,7 +383,7 @@ const hairstyles = [
         name: "Classic Slick Back",
         category: "slick-back",
         price: "၄၀၀၀ ကျပ်",
-        images: ["images/classic-slick-back-1.jpg", "images/classic-slick-back-2.jpg", "images/classic-slick-back-3.jpg","images/classic-slick-back-4.jpg","images/classic-slick-back-5.jpg"],
+        images: ["images/classic-slick-back-1.jpg", "images/classic-slick-back-2.jpg", "images/classic-slick-back-3.jpg"],
         faceType: "ဘဲဥပုံ၊ စတုရန်းပုံ",
         hairLength: "၄ လက်မမှ ၇ လက်မအထိ",
         serviceTime: "မိနစ် ၅၀",
