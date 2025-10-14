@@ -140,7 +140,7 @@ const hairstyleDetails = {
 
     30: {
         name: "Hard Part",
-        details: `The 3-inch top hair is combed over. A razor is used to shave a bold, distinct line where the part is, sharply separating the long top from the short sides (#1 guard).`
+        details: `Top Hair: 3.5-4 inches long, expertly swept and combed flat to the side of the hard part. Styled with high-shine pomade for a sleek, glossy finish. Parting: A razor is used to shave a perfectly straight, sharp line (Hard Part) separating the top and side sections. Sides: A high-contrast Mid-High Skin Fade is applied, starting high near the parietal ridge and blending seamlessly down to a zero-level/razor-shaved finish at the base. Contrast: Maximum contrast between the glossy top and the bald skin fade.`
     },
     31: {
         name: "Textured Side Part",
