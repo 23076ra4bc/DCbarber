@@ -1,7 +1,7 @@
 // js/rating.js - Client-Side IP Protection
 
 // Google Apps Script Web App URL
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwvh6VH3o7WF2PAmv5k6jgmpbbGOAI3zi4Ge6-hzNbZWhHbISnXqjvyNo9d_NUYqSOR/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxwUXy_eATpGqqBSXF0kceDU7cr2vbDJWWVP0Sk7d0B4QE40ruJLNVccHtPNbUDlOzGSw/exec';
 
 // Visitor data storage
 let visitorIP = null;
