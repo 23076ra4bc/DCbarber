@@ -289,33 +289,29 @@ const hairstyleDetails = {
 };
 
 // AI Image Generation Prompt Template
-const PROMPT_TEMPLATE = `Generate 3 ultra-realistic portrait images in a horizontal 1×3 grid layout with consistent framing, featuring a single, fixed facial identity:
+const PROMPT_TEMPLATE = `Generate exactly three ultra-realistic portrait images in a strict horizontal 1×3 grid layout. The three panels must show the same person from three different angles:
 
-· Left panel: Front-facing view (direct camera view)
-· Center panel: Side profile view (90° left or right, matching original photo orientation)
-· Right panel: Back view (rear of the head and neck)
+· Panel 1: Front-facing view (direct camera view)
+· Panel 2: Side profile view (90° left or right)
+· Panel 3: Back view (rear of the head and neck)
 
-**Crucially, the person's facial identity, skin tone, face structure, age, and expression must be 100% identical and unchanged across all three panels.**
+Crucially, the person's facial identity, skin tone, face structure, age, and expression must be 100% identical and unchanged across all three panels.
 
 Apply the following specific hairstyle with meticulous, natural blending and hyper-realistic detail:
 
-HAIRSTYLE TO APPLY: **[HAIRSTYLE_NAME]**
-HAIRSTYLE DETAILS: **[HAIRSTYLE_DETAILS]**
+HAIRSTYLE TO APPLY: [HAIRSTYLE_NAME]
+HAIRSTYLE DETAILS: [HAIRSTYLE_DETAILS]
 
-**Style Requirements:**
+Style Requirements:
 
-· Each image must perfectly and clearly showcase the **[HAIRSTYLE_NAME]** from its specific angle (front, side, back).
-· Use **soft, diffused natural studio lighting** with subtle shadows to enhance hair texture, depth, and the shape of the head.
+· Each image must perfectly and clearly showcase the [HAIRSTYLE_NAME] from its specific angle (front, side, back).
+· Use soft, diffused natural studio lighting with subtle shadows to enhance hair texture, depth, and the shape of the head.
 · High-resolution photorealistic rendering with lifelike, individually rendered hair strands and seamless integration with the hairline.
-· The hairstyle must look **naturally grown** and professionally styled according to the details provided.
-· **Consistency check:** Ensure the hair length and texture are perfectly matched and continuous between the side panel and the back panel.
+· The hairstyle must look naturally grown and professionally styled according to the details provided.
+· Consistency check: Ensure the hair length and texture are perfectly matched and continuous between the side panel and the back panel.
 
-**Output Format:**
-· All three images must be aligned in a single 1x3 grid with consistent size and spacing.
-· Label each panel below the image using a clean sans-serif font:
-    "Front | [HAIRSTYLE_NAME]"
-    "Side | [HAIRSTYLE_NAME]"
-    "Back | [HAIRSTYLE_NAME]"`;
+Output Format:
+· All three images must be aligned in a single 1x3 grid with consistent size and spacing.Do not generate more than three views.`;
 
 // Generate Prompt
 function generatePrompt(hairstyleId) {
