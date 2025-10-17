@@ -289,13 +289,14 @@ const hairstyleDetails = {
 };
 
 // AI Image Generation Prompt Template
-const PROMPT_TEMPLATE = `Generate exactly three ultra-realistic portrait images in a strict horizontal 1×3 grid layout. The three panels must show the same person from three different angles:
+const PROMPT_TEMPLATE = `Generate exactly four ultra-realistic portrait images in a strict horizontal 2×2 grid layout. The four panels must show the same person from four different angles:
 
-· Panel 1: Front-facing view (direct camera view)
-· Panel 2: Side profile view (90° left or right)
-· Panel 3: Back view (rear of the head and neck)
+· Panel 1: Original image.
+· Panel 2: Front-facing view (direct camera view)
+· Panel 3: Side profile view (90° left or right)
+· Panel 4: Back view (rear of the head and neck)
 
-Crucially, the person's facial identity, skin tone, face structure, age, and expression must be 100% identical and unchanged across all three panels.
+Crucially, the person's facial identity, skin tone, face structure, age, and expression must be 100% identical and unchanged across all four panels.
 
 Apply the following specific hairstyle with meticulous, natural blending and hyper-realistic detail:
 
@@ -311,7 +312,9 @@ Style Requirements:
 · Consistency check: Ensure the hair length and texture are perfectly matched and continuous between the side panel and the back panel.
 
 Output Format:
-· All three images must be aligned in a single 1x3 grid with consistent size and spacing.Do not generate more than three views.`;
+· All four images must be aligned in a single 2×2 grid with consistent size and spacing.
+. Do not generate more than four views.
+. Do not generate more than four objects.`;
 
 // Generate Prompt
 function generatePrompt(hairstyleId) {
