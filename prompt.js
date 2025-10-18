@@ -23,7 +23,7 @@ Apply this hairstyle with hyper-realistic detail. It must look naturally grown a
 
 Style & Lighting: Soft, diffused natural studio lighting. Photorealistic quality, showcasing the hairstyle clearly from each angle.
 
-Output: A single image containing exactly three panels in a 2×2 grid. Do not generate more than four views.
+Output: A single image containing exactly four panels in a 2×2 grid. Do not generate more than four views.
 Do not generate more than four objects.`;
 
 // Generate Prompt
