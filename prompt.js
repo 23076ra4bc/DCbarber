@@ -156,7 +156,7 @@ async function copyPromptWithTracking(hairstyleId, hairstyleName) {
     try {
         // Set button to loading state
         copyButton.disabled = true;
-        copyButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Copying...';
+        copyButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating_prompt';
         copyButton.style.background = '#94a3b8';
         
         const prompt = generatePrompt(hairstyleId);
