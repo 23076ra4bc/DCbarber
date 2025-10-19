@@ -118,7 +118,8 @@ function generateHairstyleCards(filter = 'all') {
     
     console.log('✅ All cards generated successfully');
 }
-// Open hairstyle modal - FIXED VERSION
+
+// Open hairstyle modal - FIXED FRAME VERSION
 function openHairstyleModal(hairstyle) {
     if (!hairstyleModal || !modalTitle || !faceType || !hairLength || !serviceTime || !price || !rating) {
         console.error('Required modal elements not found');
@@ -201,7 +202,16 @@ function openHairstyleModal(hairstyle) {
             window.RatingSystem.updateUIBasedOnRatingStatus(hairstyle.id);
         }, 100);
     }
+    
+    // Ensure prompt button is added and updated
+    if (window.PromptSystem) {
+        setTimeout(() => {
+            window.PromptSystem.addPromptButtonToModal();
+            window.PromptSystem.updateCopyButtonState();
+        }, 50);
+    }
 }
+
 // Main initialization
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 DOM loaded, initializing app...');
